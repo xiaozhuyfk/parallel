@@ -3,18 +3,18 @@ layout: post
 title: Project Proposal
 ---
 
-## Title
+#### Title
 
-## Summary
+#### Summary
 
-## Background
+#### Background
 
-## The Challenge
+#### The Challenge
 
-## Resources
+#### Resources
 
-## Goals and Deliverables
+#### Goals and Deliverables
 
-## Platform Choice
+#### Platform Choice
 
-## Schedule
+#### Schedule
