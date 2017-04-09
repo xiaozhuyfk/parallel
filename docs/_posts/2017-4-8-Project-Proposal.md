@@ -3,23 +3,23 @@ layout: post
 title: Project Proposal
 ---
 
-#### Title
+### Title
 Ask Me Anything: Parallel Question Answering System with Freebase
 
-#### Team
+### Team
 Ziyuan Gong (ziyuang), Hongyu Li (hongyul)
 
-#### Summary
+### Summary
 
 
-#### Background
+### Background
 
-#### The Challenge
+### The Challenge
 
-#### Resources
+### Resources
 
-#### Goals and Deliverables
+### Goals and Deliverables
 
-#### Platform Choice
+### Platform Choice
 
-#### Schedule
+### Schedule
