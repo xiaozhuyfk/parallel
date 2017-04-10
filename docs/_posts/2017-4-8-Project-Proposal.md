@@ -42,10 +42,10 @@ Freebase is a large collaborative knowledge base containing well structured data
 
 #### What is a typical structure for Question Answering systems?
 There are many different approaches to solve the Question Answering problem, such as NLP-based methods, Information Retrieval based methods or Machine Learning techniques, and the system structure may vary. However, our implementation will follow the paradigm below.
-* Input: $q$, a question in natural language
-* Entity Recognition: identify the root entity $e$ in $q$
-* Fact Candidate Generation: generate the set of fact candidates $F$, where for each $f \in F$, $f = (e, r, o)$ is the Freebase triple that is extended from the root entity $e$
-* Ranking: rank all possible fact candidates, choose the best one to answer the question $q$
+* Input: $$q$$, a question in natural language
+* Entity Recognition: identify the root entity $$e$$ in $$q$$
+* Fact Candidate Generation: generate the set of fact candidates $$F$$, where for each $$f \in F$$, $$f = (e, r, o)$$ is the Freebase triple that is extended from the root entity $$e$$
+* Ranking: rank all possible fact candidates, choose the best one to answer the question $$q$$
 
 
 
