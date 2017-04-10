@@ -80,6 +80,7 @@ If the project goes really well, we want to achieve the following goals:
 * Build a Question Answering Visualizer that could display the process of finding the answers for the question through Freebase
 
 #### DEMO
+We aim to give an interactive demo during our final presentation. It would be great if we can ask some people to come up with some questions and input them to our Question Answering system, which would make the presentation much more engaging. For evaluation purposes, we will include the speedup graph for multiple approaches in our final report, and also the evaluation results on the **Free917** and **Webquestions** dataset to see whether we have achieved the accuracy objective.
 
 <br><br>
 
