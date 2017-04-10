@@ -6,7 +6,7 @@
 name: Ask Me Anything
 
 # Short bio or description (displayed in the header)
-description: Parallel Question Answering System with Freebase
+description: Distributed Question Answering System with Freebase
 
 # URL of your avatar or profile pic (you could use your GitHub profile pic)
 avatar: https://raw.githubusercontent.com/barryclark/jekyll-now/master/images/jekyll-logo.png
