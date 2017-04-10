@@ -13,24 +13,34 @@ This document is the proposal of our Parallel Question Answering System project 
 * Goals and Deliverables
 * Platform Choice
 * Schedule
+
+___
 <br><br><br>
   
   
 ## TITLE
 Ask Me Anything: Parallel Question Answering System with Freebase
+
+___
 <br><br><br>
 
 ## TEAM
 Ziyuan Gong (ziyuang), Hongyu Li (hongyul)
+
+___
 <br><br><br>
 
 ## SUMMARY
 We will implement a question answering system trained by deep learning models (LSTM, CDSSM, etc.) that could answer any input questions from users. We will use parallel techniques to speedup the training and ranking phases of the system, and further improve the reponse speed by distributing the computation to multiple workers.
+
+___
 <br><br><br>
 
 
 ## BACKGROUND
 Freebase is a large collaborative knowledge base containing well structured data that allows machines to access them efficiently. Each entity can be considered as a graph node in the Freebase knowledge graph, and each outward edge together with the connecting entity or attribute represents a piece of fact or knowledge that could be used to answer different kinds of questions.
+
+___
 <br><br><br>
 
 ## RESOURCES
@@ -42,9 +52,12 @@ Papers as references:
 * [*Joint Representation Learning of Text and Knowledge for Knowledge Graph Completion*](https://arxiv.org/pdf/1611.04125.pdf)
 * [*End-to-end Memory Networks*](https://papers.nips.cc/paper/5846-end-to-end-memory-networks.pdf)
 
+___
 <br><br><br>
 
 ## THE CHALLENGE
+
+___
 <br><br><br>
 
 ## GOALS AND DELIVERABLES
@@ -53,10 +66,23 @@ Papers as references:
 #### HOPE TO ACHIEVE
 
 #### DEMO
+
+___
 <br><br><br>
 
 ## PLATFORM CHOICE
+
+___
 <br><br><br>
 
 ## SCHEDULE
+| Date       | Objectives  |
+| ---------- | ----------- |
+| 2017.04.10 | path to data files to supply the data that will be passed into templates. |
+| 2017.04.17 | engine to be used for processing templates. Handlebars is the default. |
+| 2017.04.24 | extension to be used for dest files. |
+| 2017.05.01 | extension to be used for dest files. |
+| 2017.05.08 | extension to be used for dest files. |
+
+___
 <br><br><br>
