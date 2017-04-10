@@ -35,7 +35,7 @@ Freebase is a large collaborative knowledge base containing well structured data
 
 ## RESOURCES
 We will start from the **aqqu** system provided in the study *More Accurate Question Answering on Freebase* by Hannah Bast and Elmar Haussmann. However, the **aqqu** system was only trained on the **Free917** and the **Webquestions** dataset, so that it does not satisfy our goal that the QA system could answer any input questions. Therefore, we will basically build our own QA system from scratch with similar accuracy but faster response speed.
-<br>
+<br><br><br>
 Papers as references:
 * [*More Accurate Question Answering on Freebase*](http://ad-publications.informatik.uni-freiburg.de/CIKM_freebase_qa_BH_2015.pdf)
 * [*Semantic Parsing via Staged Query Graph Generation: Question Answering with Knowledge Base*](http://www.aclweb.org/anthology/P15-1128)
