@@ -34,7 +34,20 @@ We will implement a question answering system trained by deep learning models (L
 
 
 ## BACKGROUND
+#### What is Freebase?
 Freebase is a large collaborative knowledge base containing well structured data that allows machines to access them efficiently. Each entity can be considered as a graph node in the Freebase knowledge graph, and each outward edge together with the connecting entity or attribute represents a piece of fact or knowledge that could be used to answer different kinds of questions.
+
+#### What is Question Answering?
+
+
+#### What is a typical structure for Question Answering systems?
+There are many different approaches to solve the Question Answering problem, such as NLP-based methods, Information Retrieval based methods or Machine Learning techniques, and the system structure may vary. However, our implementation will follow the paradigm below.
+* Input: $q$, a question in natural language
+* Entity Recognition: identify the root entity $e$ in $q$
+* Fact Candidate Generation: generate the set of fact candidates $F$, where for each $f \in F$, $f = (e, r, o)$ is the Freebase triple that is extended from the root entity $e$
+* Ranking: rank all possible fact candidates, choose the best one to answer the question $q$
+
+
 
 <br><br><br>
 
