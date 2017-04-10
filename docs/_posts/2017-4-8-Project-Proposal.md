@@ -13,30 +13,30 @@ This document is the proposal of our Parallel Question Answering System project 
 * Goals and Deliverables
 * Platform Choice
 * Schedule
-<br><br>
+<br><br><br><br>
   
   
 ## TITLE
 Ask Me Anything: Parallel Question Answering System with Freebase
-
+<br><br><br><br>
 
 ## TEAM
 Ziyuan Gong (ziyuang), Hongyu Li (hongyul)
-
+<br><br><br><br>
 
 ## SUMMARY
-
+<br><br><br><br>
 
 
 ## BACKGROUND
 Freebase is a large collaborative knowledge base containing well structured data that allows machines to access them efficiently. Each entity can be considered as a graph node in the Freebase knowledge graph, and each outward edge together with the connecting entity or attribute represents a piece of fact or knowledge that could be used to answer different kinds of questions.
-
+<br><br><br><br>
 
 ## THE CHALLENGE
-
+<br><br><br><br>
 
 ## RESOURCES
-
+<br><br><br><br>
 
 ## GOALS AND DELIVERABLES
 #### PLAN TO ACHIEVE
@@ -44,8 +44,10 @@ Freebase is a large collaborative knowledge base containing well structured data
 #### HOPE TO ACHIEVE
 
 #### DEMO
+<br><br><br><br>
 
 ## PLATFORM CHOICE
-
+<br><br><br><br>
 
 ## SCHEDULE
+<br><br><br><br>
