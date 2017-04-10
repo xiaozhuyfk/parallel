@@ -61,8 +61,8 @@ Papers as references:
 
 ## THE CHALLENGE
 * Data management: Given the sheer amount of Freebase raw data, it poses a challenge for our team to collect and construct a database to support effective information retrieval. Furthermore, both members of our team have limited prior experience on database, such that it requires extra time for our team to learn new stuff.
-* Deep learning model: A significant part of our project relies on keras, a framework for deep-learning model. Both the adaptation of the framework and the decision for our final deep learning algorithm require experimentation and comparison of various implementations.
-* Acceleration: Again, the large amount of data in Freebase provides us with sufficient motivation to adapt parallel mechanism we learnt in class to accelerate the whole process. However, given the hop-by- hop network structure, it poses a challenge for us to find the correct response in a short period of time.
+* Deep learning model: A significant part of our project relies on keras, a Deep Learning library for Python. Both the adaptation of the framework and the decision for our final deep learning algorithm require experimentation and comparison of various implementations.
+* Acceleration: Again, the large amount of data in Freebase provides us with sufficient motivation to adapt parallel mechanism we learnt in class to accelerate the whole process. However, given the hop-by-hop network structure, it poses a challenge for us to find the correct response in a short period of time.
 
 <br><br>
 
