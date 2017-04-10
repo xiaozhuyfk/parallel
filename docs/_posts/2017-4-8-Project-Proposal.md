@@ -38,6 +38,7 @@ We will implement a question answering system trained by deep learning models (L
 Freebase is a large collaborative knowledge base containing well structured data that allows machines to access them efficiently. Each entity can be considered as a graph node in the Freebase knowledge graph, and each outward edge together with the connecting entity or attribute represents a piece of fact or knowledge that could be used to answer different kinds of questions.
 
 #### What is Question Answering?
+> Question answering (QA) is a computer science discipline within the fields of information retrieval and natural language processing (NLP), which is concerned with building systems that automatically answer questions posed by humans in a natural language. --- Wikipedia
 
 #### What is a typical structure for Question Answering systems?
 There are many different approaches to solve the Question Answering problem, such as NLP-based methods, Information Retrieval based methods or Machine Learning techniques, and the system structure may vary. However, our implementation will follow the paradigm below.
@@ -80,7 +81,8 @@ If the project goes really well, we want to achieve the following goals:
 * Build a Question Answering Visualizer that could display the process of finding the answers for the question through Freebase
 
 #### DEMO
-We aim to give an interactive demo during our final presentation. It would be great if we can ask some people to come up with some questions and input them to our Question Answering system, which would make the presentation much more engaging. For evaluation purposes, we will include the speedup graph for multiple approaches in our final report, and also the evaluation results on the **Free917** and **Webquestions** dataset to see whether we have achieved the accuracy objective.
+* We aim to give an interactive demo during our final presentation. It would be great if we can ask some people to come up with some questions and input them to our Question Answering system, which would make the presentation much more engaging. 
+* For evaluation purposes, we will include the speedup graph for multiple approaches in our final report, and also the evaluation results on the **Free917** and **Webquestions** dataset to see whether we have achieved the accuracy objective.
 
 <br><br>
 
