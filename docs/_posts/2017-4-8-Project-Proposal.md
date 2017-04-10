@@ -68,12 +68,12 @@ Papers as references:
 
 ## SCHEDULE
 
-| Date | Objectives |
-| ---------- | ----------- |
+| Date       | Objectives                                                                |
+|------------|---------------------------------------------------------------------------|
 | 2017.04.10 | path to data files to supply the data that will be passed into templates. |
-| 2017.04.17 | engine to be used for processing templates. Handlebars is the default. |
-| 2017.04.24 | extension to be used for dest files. |
-| 2017.05.01 | extension to be used for dest files. |
-| 2017.05.08 | extension to be used for dest files. |
+| 2017.04.17 | a                                                                         |
+| 2017.04.24 | b                                                                         |
+| 2017.05.01 | c                                                                         |
+| 2017.05.08 | d                                                                         |
 
 <br><br><br>
