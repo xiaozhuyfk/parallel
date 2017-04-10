@@ -14,23 +14,23 @@ This document is the proposal of our **Distributed Question Answering System** p
 * Platform Choice
 * Schedule
 
-<br><br><br>
+<br><br>
   
   
 ## TITLE
 Ask Me Anything: Distributed Question Answering System with Freebase
 
-<br><br><br>
+<br><br>
 
 ## TEAM
 Ziyuan Gong (ziyuang), Hongyu Li (hongyul)
 
-<br><br><br>
+<br><br>
 
 ## SUMMARY
 We will implement a question answering system trained by deep learning models (LSTM, CDSSM, etc.) that could answer any input questions from users. We will use parallel techniques to speedup the training and ranking phases of the system, and further improve the reponse speed by distributing the computation to multiple workers.
 
-<br><br><br>
+<br><br>
 
 
 ## BACKGROUND
@@ -46,9 +46,7 @@ There are many different approaches to solve the Question Answering problem, suc
 * Fact Candidate Generation: generate the set of fact candidates **F**, where for each **f** in **F**, **f** is the Freebase triple that is extended from the root entity **e**
 * Ranking: rank all possible fact candidates, choose the best one to answer the question **q**
 
-
-
-<br><br><br>
+<br><br>
 
 ## RESOURCES
 We will start from the **aqqu** system provided in the study *More Accurate Question Answering on Freebase* by Hannah Bast and Elmar Haussmann. However, the **aqqu** system was only trained on the **Free917** and the **Webquestions** dataset, so that it does not satisfy our goal that the QA system could answer any input questions. Therefore, we will basically build our own QA system from scratch with similar accuracy but faster response speed.
@@ -59,14 +57,14 @@ Papers as references:
 * [*Joint Representation Learning of Text and Knowledge for Knowledge Graph Completion*](https://arxiv.org/pdf/1611.04125.pdf)
 * [*End-to-end Memory Networks*](https://papers.nips.cc/paper/5846-end-to-end-memory-networks.pdf)
 
-<br><br><br>
+<br><br>
 
 ## THE CHALLENGE
 * Data management: Given the sheer amount of Freebase raw data, it poses a challenge for our team to collect and construct a database to support effective information retrieval. Furthermore, both members of our team have limited prior experience on database, such that it requires extra time for our team to learn new stuff.
 * Deep learning model: A significant part of our project relies on keras, a framework for deep-learning model. Both the adaptation of the framework and the decision for our final deep learning algorithm require experimentation and comparison of various implementations.
 * Acceleration: Again, the large amount of data in Freebase provides us with sufficient motivation to adapt parallel mechanism we learnt in class to accelerate the whole process. However, given the hop-by- hop network structure, it poses a challenge for us to find the correct response in a short period of time.
 
-<br><br><br>
+<br><br>
 
 ## GOALS AND DELIVERABLES
 #### PLAN TO ACHIEVE
@@ -83,13 +81,13 @@ If the project goes really well, we want to achieve the following goals:
 
 #### DEMO
 
-<br><br><br>
+<br><br>
 
 ## PLATFORM CHOICE
 
 The system will be implemented in Python, and we will use **Keras** to train the LSTM (Long-short-term-memory) and CDSSM (Covolutional Deep Structured Semantic Model) models.
 
-<br><br><br>
+<br><br>
 
 ## SCHEDULE
 
@@ -101,4 +99,4 @@ The system will be implemented in Python, and we will use **Keras** to train the
 | 2017.05.01 | Launch the Question Answering system on AWS. Try to build the web service to receive Question-Answering request.                                                                |
 | 2017.05.08 | Finalize report and presentation. Continue working on web service and Question-Answering visualizer.                                                                            |
 
-<br><br><br>
+<br><br>
