@@ -3,7 +3,7 @@ layout: post
 title: Project Proposal
 ---
 
-This document is the proposal of our Parallel Question Answering System project for the course **15-418 Parallel Computer Architecture and Programming**, and we will cover the following topics in this proposal:
+This document is the proposal of our **Distributed Question Answering System** project for the course **15-418 Parallel Computer Architecture and Programming**, and we will cover the following topics in this proposal:
 * Title
 * Team
 * Summary
