@@ -64,6 +64,8 @@ Papers as references:
 
 ## PLATFORM CHOICE
 
+The system will be implemented in Python, and we will use **Keras** to train the LSTM (Long-short-term-memory) and CDSSM (Covolutional Deep Structured Semantic Model) models.
+
 <br><br><br>
 
 ## SCHEDULE
