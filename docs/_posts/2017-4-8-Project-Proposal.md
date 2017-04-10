@@ -67,7 +67,7 @@ Papers as references:
 <br><br><br>
 
 ## SCHEDULE
-| Date       | Objectives  |
+| Date | Objectives |
 | ---------- | ----------- |
 | 2017.04.10 | path to data files to supply the data that will be passed into templates. |
 | 2017.04.17 | engine to be used for processing templates. Handlebars is the default. |
