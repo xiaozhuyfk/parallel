@@ -55,8 +55,16 @@ Papers as references:
 
 ## GOALS AND DELIVERABLES
 #### PLAN TO ACHIEVE
+One must-achieve for this project is to build a robust Question Answering system. Here is a list of functionalities and requirements that we want our system to achieve:
+* Robust, bug-free
+* Will give a list of possible answers for any input questions
+* Accuracy: correct answer in the top-5 list for 80% of the questions
+* Speed: output an answer for any question within a second (the **aqqu** system answers a question for about 5 seconds in average)
 
 #### HOPE TO ACHIEVE
+If the project goes really well, we want to achieve the following goals:
+* Build a web service to receive user requests
+* Build a Question Answering Visualizer that could display the process of finding the answers for the question through Freebase
 
 #### DEMO
 
