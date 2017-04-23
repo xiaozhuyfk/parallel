@@ -37,7 +37,7 @@ class EntityLinker(object):
             'epsilon' : epsilon
         }
 
-        r = requests.post(self.tag_url, data = parameter)
+        r = requests.get(self.tag_url, data = parameter)
         annotations = r.json()
 
         return annotations
