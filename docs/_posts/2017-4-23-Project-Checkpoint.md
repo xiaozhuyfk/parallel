@@ -22,3 +22,20 @@ This document is a checkpoint review of our **Distributed Question Answering Sys
 | 2017.05.08 | Finalize report and presentation. Continue working on web service and Question-Answering visualizer.                                                                            |
 
 <br><br>
+
+
+## Summary of Work
+
+<br><br>
+
+
+## Preliminary Results
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/wOyso7gFJfU" frameborder="0" allowfullscreen></iframe>
+
+<br><br>
+
+
+## Concerns
+
+<br><br>
