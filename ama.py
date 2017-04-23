@@ -2,6 +2,7 @@ from __future__ import print_function
 
 import logging
 import globals
+import sys
 from relation_matching import modules
 
 logging.basicConfig(format='%(asctime)s : %(levelname)s '
