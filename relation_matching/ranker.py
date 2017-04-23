@@ -29,8 +29,6 @@ import nltk.data
 
 logger = logging.getLogger(__name__)
 
-tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
-
 
 def tokenize_term(t):
     return re.sub('[?!@#$%^&*,()_+=\'\d\./;]', '', t).lower()
