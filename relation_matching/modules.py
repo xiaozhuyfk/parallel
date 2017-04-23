@@ -2,6 +2,7 @@ import logging
 import globals
 from relation_matching.wiki_url import WikiUrl
 from relation_matching.fact_extractor import FactExtractor
+from entity_linking.entity_linker import EntityLinker
 from word2vec import Word2Vec
 
 from ranker import Ranker
