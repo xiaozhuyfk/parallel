@@ -24,7 +24,7 @@ from model import (
     EmbeddingJointPairwise,
     vectorize_sentence_one_hot
 )
-import wikipedia
+
 import nltk.data
 
 logger = logging.getLogger(__name__)
@@ -133,123 +133,10 @@ class FactCandidate(object):
 
         self.f1 = computeF1(self.answers, self.objects)[2]
 
-        self.support = response["support"]
-
-        """
-        self.top_sentence_with_question = []
-        self.top_sentence_with_question_trigram = []
-        self.top_sentence_with_candidate = []
-        self.top_sentence_with_candidate_trigram = []
-        question_set = set(self.query_tokens)
-        question_trigram_set = set(self.query_trigram)
-        candidate_set = set(self.subject_tokens + self.relation_tokens)
-        candidate_trigram_set = set(self.subject_trigram + self.relation_trigram)
-
-        max_question_overlap = 0
-        max_question_trigram_overlap = 0
-        max_candidate_overlap = 0
-        max_candidate_trigram_overlap = 0
-        for sentence in self.support:
-            sentence_tokens = [tokenize_term(t) for t in sentence.split()]
-            sentence_trigram_tokens = ngramize(sentence_tokens, 3)
-            if len(set(sentence_tokens) & question_set) > max_question_overlap:
-                max_question_overlap = len(set(sentence_tokens) & question_set)
-                self.top_sentence_with_question = sentence_tokens
-            if len(set(sentence_trigram_tokens) & question_trigram_set) > max_question_trigram_overlap:
-                max_question_trigram_overlap = len(set(sentence_trigram_tokens) & question_trigram_set)
-                self.top_sentence_with_question_trigram = sentence_trigram_tokens
-            if len(set(sentence_tokens) & candidate_set) > max_candidate_overlap:
-                max_candidate_overlap = len(set(sentence_tokens) & candidate_set)
-                self.top_sentence_with_candidate = sentence_tokens
-            if len(set(sentence_trigram_tokens) & candidate_trigram_set) > max_candidate_trigram_overlap:
-                max_candidate_trigram_overlap = len(set(sentence_trigram_tokens) & candidate_trigram_set)
-                self.top_sentence_with_candidate_trigram = sentence_trigram_tokens
-
-        self.top_sentence_with_question = self.top_sentence_with_question[:28]
-        self.top_sentence_with_candidate = self.top_sentence_with_candidate[:28]
-        self.top_sentence_with_question_trigram = self.top_sentence_with_question_trigram[:203]
-        self.top_sentence_with_candidate_trigram = self.top_sentence_with_candidate_trigram[:203]
-        self.max_question_overlap = max_question_overlap
-        self.max_question_trigram_overlap = max_question_trigram_overlap
-        self.max_candidate_overlap = max_candidate_overlap
-        self.max_candidate_trigram_overlap = max_candidate_trigram_overlap
-        """
-
-        """
-        if (len(self.support) == 0):
-            self.support = set([])
-            for o in self.oid[:5]:
-                self.support |= set(modules.support_sentence_extractor.get_support_sentence_with_pair(self.sid, o))
-            self.support = list(self.support)
-        """
-
         graph_tokens = [" ".join(self.subject_tokens),
                         " ".join(self.relation_tokens),
                         str(self.objects[:5]).encode("utf-8")]
         self.graph_str = " --> ".join(graph_tokens)
-
-        """
-        # support sentences
-        sentences = modules.wiki_extractor.extract_wiki_page(
-            query.dataset,
-            query,
-            self.subject,
-            sid.replace(".", "-")
-        )
-        self.support = set([])
-        for object in self.objects:
-            object = object.lower()
-            for sent in sentences:
-                sent = sent.lower()
-                if self.subject.lower() in sent and object in sent:
-                    self.support.add(sent)
-
-        # support sentences from wikipedia summary
-        sentences = []
-        try:
-            text = wikipedia.summary(self.subject).lower()
-            paragraphs = text.strip().split("\n")
-            sentences = [tokenizer.tokenize(p) for p in paragraphs if p]
-            sentences = [s for p in sentences for s in p]
-        except:
-            pass
-        self.support_summary = set([])
-
-        for object in self.objects:
-            object = object.lower()
-            for sent in sentences:
-                sent = sent.lower()
-                if self.subject.lower() in sent and object in sent:
-                    self.support_summary.add(sent)
-        """
-
-        """
-        graph_tokens = [" ".join(self.subject_tokens),
-                        " ".join(self.relation_tokens),
-                        str(self.objects[:5])]
-        graph_str = " --> ".join(graph_tokens)
-        self.message = "Entity Score = %f, F1 = %f, graph = %s\n" % (self.score, self.f1, graph_str)
-        self.message += "Number of support sentences = %d\n" % (len(self.support))
-        self.message += "Example support sentence:\n"
-        if len(self.support) > 0:
-            for sent in list(self.support)[:4]:
-                self.message += sent + "\n"
-        """
-
-    def top_sentence_score(self, model):
-        self.top_sentence = "EMPTY"
-        if len(self.support) == 0: return 0
-        sentence_tokens = [[tokenize_term(t) for t in re.split('[\[\]\s|\']', sentence) if t][:28] for sentence in self.support]
-        predictions = model.predict_with_sent(self.query_tokens, sentence_tokens, 28).flatten()
-        idx = np.argmax(predictions)
-        self.top_sentence = self.support[idx]
-        return predictions[idx]
-
-    def support_sentence_score(self, model):
-        if len(self.support) == 0: return 0
-        sentence_tokens = [[tokenize_term(t) for t in sentence.split()][:28] for sentence in self.support]
-        predictions = model.predict_with_sent(self.query_tokens, sentence_tokens, 28).flatten()
-        return np.sum(predictions) / len(predictions)
 
 
 
