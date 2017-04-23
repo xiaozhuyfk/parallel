@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import logging
 import globals
 from relation_matching import modules
@@ -14,10 +16,10 @@ logger = logging.getLogger(__name__)
 
 def answer():
     #print modules.facts_extractor.extract_fact_list_with_entity_linker('what are bigos')
-    print modules.facts_ranker.rank('what are bigos')
+    print(modules.facts_ranker.rank('what are bigos'))
 
 def test(dataset):
-    print "test"
+    print("test")
 
 def main():
     import argparse
