@@ -43,8 +43,8 @@ class EntityLinker(object):
         self.wiki_url = wiki_url
 
     @staticmethod
-    def init_from_config(config_options):
-        return EntityLinker(config_options)
+    def init_from_config(config_options, wiki_url):
+        return EntityLinker(config_options, wiki_url)
 
     def identify_entities(self, text):
         result = []
