@@ -22,6 +22,8 @@ def play():
         sys.stdout.write("enter question> ")
         sys.stdout.flush()
         question = sys.stdin.readline().strip()
+        if not question: continue
+
         top5 = modules.facts_ranker.rank(question)
 
         if not top5:
