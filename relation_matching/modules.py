@@ -25,5 +25,5 @@ def init_from_config(args):
     sparql_backend = globals.get_sparql_backend(config_options)
     wiki_url = WikiUrl(config_options)
     entity_linker = EntityLinker.init_from_config(config_options, wiki_url)
-    #facts_ranker = Ranker.init_from_config(config_options)
+    facts_ranker = Ranker.init_from_config(config_options)
     facts_extractor = FactExtractor.init_from_config(config_options)
