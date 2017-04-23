@@ -54,7 +54,7 @@ class FactExtractor(object):
             facts = self.backend.query(self.facts_by_id_query % s)
             for f in facts:
                 r, o = f[0], f[1]
-                if (".." in r): continue
+
                 if o.startswith('m.'):
                     o_name = self.backend.query(self.name_by_id_query % o)
                     # skip if the entity does not have a name in Freebase
