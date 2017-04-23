@@ -51,7 +51,7 @@ class EntityLinker(object):
         annotations = tagme.annotate(text)
         for ann in annotations.get_annotations(0.1):
             name = ann.entity_title
-            score = ann.entity_score
+            score = ann.score
             wiki_title = tagme.normalize_title(name)
             mid = self.wiki_url[wiki_title]
             if mid is None: continue
