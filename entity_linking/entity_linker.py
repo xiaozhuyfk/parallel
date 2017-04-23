@@ -11,7 +11,8 @@ class EntityLinker(object):
         self.api_url = "https://tagme.d4science.org/tagme/api"
         self.tag_url = "http://tagme.d4science.org/tagme/tag"
         self.spot_url = "https://tagme.d4science.org/tagme/spot"
-        self.key = "38345877-16db-4293-887f-8a9154c95247-843339462"
+        #self.key = "38345877-16db-4293-887f-8a9154c95247-843339462"
+        self.key = "caeda985-327f-4c77-a159-91455986be37-843339462"
 
     @staticmethod
     def init_from_config(config_options):
