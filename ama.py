@@ -22,7 +22,7 @@ def play():
         sys.stdout.write("enter question> ")
         sys.stdout.flush()
         question = sys.stdin.readline().strip()
-        modules.facts_ranker.rank(question)
+        print(modules.facts_ranker.rank(question))
         print("")
 
 def test(dataset):
