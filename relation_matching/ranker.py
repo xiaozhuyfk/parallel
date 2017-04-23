@@ -1,5 +1,6 @@
 import logging
 import modules
+import time
 from util import (
     codecsWriteFile,
     codecsReadFile,
@@ -272,6 +273,7 @@ class Ranker(object):
         if json == []:
             return []
 
+        start_time = time.time()
         candidates = []
         for ie in json:
             subject = ie["subject"]
@@ -288,7 +290,10 @@ class Ranker(object):
                                               relations[rel])
                 fact_candidate.extract_features()
                 candidates.append(fact_candidate)
+        duration = (time.time() - start_time) * 1000
+        logger.info("Feature Extraction time: %.2f ms." % duration)
 
+        start_time = time.time()
         pairwise_predictions = self.pairwise_model.predict(candidates, 28).flatten()
         pairwise_trigram_predictions = self.pairwise_trigram.predict(candidates, 203).flatten()
         jointpairwise_predictions = self.jointpairwise.predict(
@@ -315,7 +320,11 @@ class Ranker(object):
             'query_trigram',
             'relation_trigram'
         ).flatten()
+        duration = (time.time() - start_time) * 1000
+        logger.info("Relation Score Computation time: %.2f ms." % duration)
 
+
+        start_time = time.time()
         for idx in xrange(len(candidates)):
             candidate = candidates[idx]
             candidate.add_feature(jointpairwise_predictions[idx])
@@ -331,6 +340,8 @@ class Ranker(object):
                             str(candidate.feature_vector),
                             "a")
         self.svm_rank()
+        duration = (time.time() - start_time) * 1000
+        logger.info("SVM Ranking time: %.2f ms." % duration)
 
         # Choose answers from candidates
         scores = [float(n) for n in codecsReadFile(self.svmFactCandidateScores).strip().split("\n")]

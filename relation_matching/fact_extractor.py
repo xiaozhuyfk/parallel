@@ -1,5 +1,6 @@
 import logging
 import modules
+import time
 
 
 logger = logging.getLogger(__name__)
@@ -38,7 +39,12 @@ class FactExtractor(object):
         return FactExtractor(config_options)
 
     def extract_fact_list_with_entity_linker(self, question):
+        start_time = time.time()
         entities = modules.entity_linker.identify_entities(question)
+        duration = (time.time() - start_time) * 1000
+        logger.info("Entity Linking time: %.2f ms." % duration)
+
+        start_time = time.time()
         result = []
         for ie in entities:
             e = ie.entity
@@ -107,4 +113,6 @@ class FactExtractor(object):
                  "relations" : relations}
             result.append(d)
 
+        duration = (time.time() - start_time) * 1000
+        logger.info("Facts extraction time: %.2f ms." % duration)
         return result

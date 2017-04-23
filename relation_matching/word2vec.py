@@ -22,7 +22,6 @@ class Word2Vec(object):
         try:
             return self.embeddings[word]
         except KeyError:
-            #logger.debug("'%s' don't have a word vector" % word)
             return None
 
     def transform_seq(self, tokens):
@@ -34,14 +33,6 @@ class Word2Vec(object):
         return V
 
     def synonym_score(self, word_a, word_b):
-        """
-        Returns a synonym score for the provided words.
-        If the two words are not considered a synonym
-        0.0 is returned.
-        :param word_a:
-        :param word_b:
-        :return:
-        """
         similarity = self.similarity(word_a, word_b)
         if similarity > MIN_WORD_SIMILARITY:
             return similarity
