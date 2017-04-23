@@ -26,7 +26,6 @@ class EntityLinker(object):
                       include_all_spots = "false",
                       long_text = 0,
                       epsilon = 0.3):
-        #text = text.encode('utf-8')
         parameter = {
             'gcube-token' : self.key,
             'text' : text,
@@ -39,7 +38,7 @@ class EntityLinker(object):
         }
 
         r = requests.post(self.tag_url, data = parameter)
-        annotations = r.json()["annotations"]
+        annotations = r.json()
 
         return annotations
 
