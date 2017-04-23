@@ -34,7 +34,7 @@ class FactExtractor(object):
         '''
 
     @staticmethod
-    def init_from_config(args, config_options):
+    def init_from_config(config_options):
         return FactExtractor(config_options)
 
     def extract_fact_list_with_entity_linker(self, question):
