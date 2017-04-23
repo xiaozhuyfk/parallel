@@ -111,8 +111,8 @@ class FactCandidate(object):
 
         self.f1 = 0
 
-        graph_tokens = [" ".join(self.subject_tokens),
-                        " ".join(self.relation_tokens),
+        graph_tokens = [self.subject,
+                        self.relation,
                         str(self.objects[:5]).encode("utf-8")]
         self.graph_str = " --> ".join(graph_tokens)
 
