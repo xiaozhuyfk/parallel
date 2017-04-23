@@ -22,8 +22,9 @@ def play():
         sys.stdout.write("enter question> ")
         sys.stdout.flush()
         question = sys.stdin.readline().strip()
-        print(modules.facts_ranker.rank(question))
-        print("")
+        top5 = modules.facts_ranker.rank(question)
+        for candidate in top5:
+            print(candidate.graph_str)
 
 def test(dataset):
     print("test")

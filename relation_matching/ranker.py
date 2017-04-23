@@ -335,7 +335,8 @@ class Ranker(object):
         # Choose answers from candidates
         scores = [float(n) for n in codecsReadFile(self.svmFactCandidateScores).strip().split("\n")]
         idx = np.argmax(scores)
-        best_candidate = candidates[idx]
-        print best_candidate.subject
-        print best_candidate.relation
-        return ", ".join(best_candidate.objects[:5])
+        top5 = np.argsort(scores)[::-1][:5]
+        #best_candidate = candidates[idx]
+        #print best_candidate.subject
+        #print best_candidate.relation
+        return [candidates[idx] for idx in top5]
