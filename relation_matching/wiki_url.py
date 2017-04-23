@@ -30,7 +30,8 @@ class WikiUrl(object):
                     if (name is not None and "/" in name):
                         name = name.replace("/", "|")
                     if (name is not None):
-                        self.wiki_name[mid] = name
+                        #self.wiki_name[mid] = name
+                        self.wiki_name[name] = mid
         logger.info("Done loading wiki urls.")
 
     @staticmethod

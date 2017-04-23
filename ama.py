@@ -13,8 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 def answer():
-    print backend_util.get_id_with_url(modules.sparql_backend,
-                                       'http://en.wikipedia.org/wiki/Lalram_Muana')
+    pass
 
 def test(dataset):
     print "test"

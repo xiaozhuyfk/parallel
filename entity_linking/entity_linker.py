@@ -1,53 +1,72 @@
 import logging
-import requests
+import tagme
+from relation_matching import modules
+
+
+tagme.GCUBE_TOKEN = "38345877-16db-4293-887f-8a9154c95247-843339462"
 
 logger = logging.getLogger(__name__)
+
+class Entity(object):
+
+    def __init__(self, name):
+        self.name = name
+
+
+class KBEntity(Entity):
+
+    def __init__(self, name, identifier, score):
+        Entity.__init__(self, name)
+        # The unique identifier used in the knowledge base.
+        self.id = identifier
+        # A popularity score.
+        self.score = score
+
+
+class IdentifiedEntity():
+
+    def __init__(self,
+                 name,
+                 entity,
+                 surface_score = 0):
+        # A readable name to be displayed to the user.
+        self.name = name
+        # A score for the match of those tokens.
+        self.surface_score = surface_score
+        # The identified entity object.
+        self.entity = entity
 
 
 class EntityLinker(object):
 
     def __init__(self, config_options):
         self.config_options = config_options
-        self.api_url = "https://tagme.d4science.org/tagme/api"
-        self.tag_url = "http://tagme.d4science.org/tagme/tag"
-        self.spot_url = "https://tagme.d4science.org/tagme/spot"
-        #self.key = "38345877-16db-4293-887f-8a9154c95247-843339462"
-        self.key = "caeda985-327f-4c77-a159-91455986be37-843339462"
 
     @staticmethod
     def init_from_config(config_options):
         return EntityLinker(config_options)
 
-    def tagme_tagging(self,
-                      text,
-                      lang = "en",
-                      tweet = "false",
-                      include_abstract = "false",
-                      include_categories = "false",
-                      include_all_spots = "false",
-                      long_text = 0,
-                      epsilon = 0.3):
-        parameter = {
-            'gcube-token' : self.key,
-            'text' : text,
-            'lang' : lang,
-            'tweet' : tweet,
-            'include_abstract' : include_abstract,
-            'include_categories' : include_categories,
-            'long_text' : long_text,
-            'epsilon' : epsilon
-        }
+    def identify_entities(self, text):
+        result = []
+        annotations = tagme.annotate(text)
+        for ann in annotations.get_annotations(0.1):
+            name = ann.entity_title
+            score = ann.entity_score
+            wiki_title = tagme.normalize_title(name)
+            mid = modules.wiki_url[wiki_title]
+            if mid is None: continue
 
-        r = requests.get(self.tag_url, data = parameter)
-        annotations = r.content
+            e = KBEntity(name, mid, score)
+            ie = IdentifiedEntity(name, e, score)
+            result.append(ie)
 
-        return annotations
+        return result
 
 
 
 
 def main():
-    print EntityLinker(None).tagme_tagging("what was procter & gamble 's net profit in 1955")
+    pass
 
 if __name__ == '__main__':
     main()
