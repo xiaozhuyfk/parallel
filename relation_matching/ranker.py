@@ -1,20 +1,11 @@
-from __future__ import print_function
-
 import logging
-import globals
-import sys
-import os
 import modules
 from util import (
     codecsWriteFile,
     codecsReadFile,
-    codecsDumpJson,
-    codecsLoadJson,
-    computeF1
 )
 import subprocess
 import re
-from evaluation import load_eval_queries
 import numpy as np
 from model import (
     LSTMPointwise,
@@ -22,10 +13,7 @@ from model import (
     LSTMJointPairwise,
     DSSMPairwise,
     EmbeddingJointPairwise,
-    vectorize_sentence_one_hot
 )
-
-import nltk.data
 
 logger = logging.getLogger(__name__)
 
@@ -219,7 +207,7 @@ class Ranker(object):
         p.wait()
 
     def svm_rank(self):
-        #logger.info("Start SVM Ranking ...")
+        logger.info("Start SVM Ranking ...")
         cmd = [self.svmRankClassifyPath,
                self.svmTestingFeatureVectorsFile,
                self.svmRankModelFile,

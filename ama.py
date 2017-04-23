@@ -13,7 +13,8 @@ logger = logging.getLogger(__name__)
 
 
 def answer():
-    print modules.facts_extractor.extract_fact_list_with_entity_linker('what are bigos')
+    #print modules.facts_extractor.extract_fact_list_with_entity_linker('what are bigos')
+    print modules.facts_ranker.rank('what are bigos')
 
 def test(dataset):
     print "test"
