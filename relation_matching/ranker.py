@@ -266,6 +266,7 @@ class Ranker(object):
         return model
 
     def rank(self, question):
+        codecsWriteFile(self.svmTestingFeatureVectorsFile, "")
         question = question.lower()
         json = modules.facts_extractor.extract_fact_list_with_entity_linker(question)
         if json == []:
