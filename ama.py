@@ -27,6 +27,9 @@ def main():
                         default='config.cfg',
                         help='The configuration file to use')
     subparsers = parser.add_subparsers(help='command help')
+    answer_parser = subparsers.add_parser('answer')
+    answer_parser.set_defaults(which='answer')
+
     test_parser = subparsers.add_parser('test', help='Test memory network')
     test_parser.add_argument('dataset', help='The dataset to test')
     test_parser.set_defaults(which='test')
@@ -41,7 +44,7 @@ def main():
 
     if args.which == 'test':
         train(args.dataset)
-    else:
+    elif args.which == 'answer':
         answer()
 
 
