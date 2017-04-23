@@ -23,6 +23,10 @@ def play():
         sys.stdout.flush()
         question = sys.stdin.readline().strip()
         top5 = modules.facts_ranker.rank(question)
+
+        if not top5:
+            print("Sorry, I don't know the answer.")
+
         for candidate in top5:
             print(candidate.graph_str)
 

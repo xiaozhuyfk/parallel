@@ -270,7 +270,7 @@ class Ranker(object):
         question = question.lower()
         json = modules.facts_extractor.extract_fact_list_with_entity_linker(question)
         if json == []:
-            return "Sorry, I don't know the answer."
+            return []
 
         candidates = []
         for ie in json:
