@@ -1,6 +1,5 @@
 import logging
 import tagme
-from relation_matching import modules
 
 
 tagme.GCUBE_TOKEN = "38345877-16db-4293-887f-8a9154c95247-843339462"
@@ -39,8 +38,9 @@ class IdentifiedEntity():
 
 class EntityLinker(object):
 
-    def __init__(self, config_options):
+    def __init__(self, config_options, wiki_url):
         self.config_options = config_options
+        self.wiki_url = wiki_url
 
     @staticmethod
     def init_from_config(config_options):
@@ -53,7 +53,7 @@ class EntityLinker(object):
             name = ann.entity_title
             score = ann.entity_score
             wiki_title = tagme.normalize_title(name)
-            mid = modules.wiki_url[wiki_title]
+            mid = self.wiki_url[wiki_title]
             if mid is None: continue
 
             e = KBEntity(name, mid, score)
