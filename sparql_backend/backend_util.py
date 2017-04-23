@@ -10,5 +10,5 @@ def get_id_with_url(backend, url):
         }
     '''
 
-    mid = backend.query(self.facts_by_id_query % url)
+    mid = backend.query(query % url)
     return mid
