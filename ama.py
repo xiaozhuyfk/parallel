@@ -3,7 +3,6 @@ from __future__ import print_function
 import logging
 import globals
 from relation_matching import modules
-from sparql_backend import backend_util
 
 logging.basicConfig(format='%(asctime)s : %(levelname)s '
                            ': %(module)s : %(message)s',
@@ -16,6 +15,14 @@ logger = logging.getLogger(__name__)
 
 def answer(question):
     print(modules.facts_ranker.rank(question))
+
+def play():
+    while True:
+        sys.stdout.write("enter question> ")
+        sys.stdout.flush()
+        question = sys.stdin.readline().strip()
+        modules.facts_ranker.rank(question)
+        print("")
 
 def test(dataset):
     print("test")
@@ -31,6 +38,9 @@ def main():
     answer_parser = subparsers.add_parser('answer')
     answer_parser.add_argument('question')
     answer_parser.set_defaults(which='answer')
+
+    play_parser = subparsers.add_parser('play')
+    play_parser.set_defaults(which='play')
 
     test_parser = subparsers.add_parser('test', help='Test memory network')
     test_parser.add_argument('dataset', help='The dataset to test')
@@ -48,6 +58,8 @@ def main():
         train(args.dataset)
     elif args.which == 'answer':
         answer(args.question)
+    elif args.which == 'play':
+        play()
 
 
 if __name__ == '__main__':
