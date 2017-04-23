@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 def answer():
     #print modules.facts_extractor.extract_fact_list_with_entity_linker('what are bigos')
-    print(modules.facts_ranker.rank('what are bigos'))
+    print(modules.facts_ranker.rank('who is bill gates wife'))
 
 def test(dataset):
     print("test")
