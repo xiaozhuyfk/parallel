@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 def answer():
-    pass
+    print modules.facts_extractor.extract_fact_list_with_entity_linker('what are bigos')
 
 def test(dataset):
     print "test"
