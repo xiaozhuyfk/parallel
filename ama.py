@@ -14,9 +14,8 @@ logger = logging.getLogger(__name__)
 
 
 
-def answer():
-    #print modules.facts_extractor.extract_fact_list_with_entity_linker('what are bigos')
-    print(modules.facts_ranker.rank('who is bill gates wife'))
+def answer(question):
+    print(modules.facts_ranker.rank(question))
 
 def test(dataset):
     print("test")
@@ -30,6 +29,7 @@ def main():
                         help='The configuration file to use')
     subparsers = parser.add_subparsers(help='command help')
     answer_parser = subparsers.add_parser('answer')
+    answer_parser.add_argument('question')
     answer_parser.set_defaults(which='answer')
 
     test_parser = subparsers.add_parser('test', help='Test memory network')
@@ -47,7 +47,7 @@ def main():
     if args.which == 'test':
         train(args.dataset)
     elif args.which == 'answer':
-        answer()
+        answer(args.question)
 
 
 if __name__ == '__main__':
