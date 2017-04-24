@@ -15,8 +15,8 @@ This document is a checkpoint review of our **Distributed Question Answering Sys
 
 The following table shows the current status of our project, and the schedule for the future two weeks segmented into half-week periods.
 
-| Date       |                                                                                    Objectives                                                                                   | Status |
-|------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|-------:|
+| Date       | Objectives                                                                                                                                                                      | Status |
+|------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------|
 | 2017.04.10 | Pre-process Freebase data, split and load into multiple databases. Finalize the Question Answering system structure: entity recognition, query candidate expansion, ranking ... | Done   |
 | 2017.04.17 | Train the Bi-diretional LSTM model on the Webquestions dataset in order to compute sentence similarity. Continue working on building the Question Answering system.             | Done   |
 | 2017.04.24 | Start working on AMA web service. Distribute computation of each fact candidate to multiple worker nodes.                                                                       |        |

@@ -49,7 +49,7 @@ class EntityLinker(object):
     def identify_entities(self, text):
         result = []
         annotations = tagme.annotate(text)
-        for ann in annotations.get_annotations(0.1):
+        for ann in annotations.get_annotations():
             name = ann.entity_title
             score = ann.score
             wiki_title = tagme.normalize_title(name)
