@@ -49,10 +49,11 @@ class EntityLinker(object):
     def identify_entities(self, text):
         result = []
         annotations = tagme.annotate(text)
-        for ann in annotations.get_annotations():
+        for ann in annotations.get_annotations(0.1):
             name = ann.entity_title
             score = ann.score
             wiki_title = tagme.normalize_title(name)
+            logger.info("Wiki title: " + wiki_title)
             mid = self.wiki_url[wiki_title]
             if mid is None: continue
 
