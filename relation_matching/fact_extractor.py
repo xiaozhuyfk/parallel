@@ -41,6 +41,7 @@ class FactExtractor(object):
     def extract_fact_list_with_entity_linker(self, question):
         start_time = time.time()
         entities = modules.entity_linker.identify_entities(question)
+        logger.info("Identified identities: %s", str([ie.entity.name for ie in entities]))
         duration = (time.time() - start_time) * 1000
         logger.info("Entity Linking time: %.2f ms." % duration)
 
