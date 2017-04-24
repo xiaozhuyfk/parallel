@@ -30,12 +30,33 @@ The following table shows the current status of our project, and the schedule fo
 
 ## Summary of Work
 
+For the last two weeks, we've been working on building the entire Question-Answering system from scratch with the following components:
+* Entity Linker with [*TagMe*](https://tagme.d4science.org/tagme/)
+* Facts Candidates Extraction by sending SPARQL queries to Virtuoso database
+* Compute similarity scores with Bi-directional LSTM with pre-trained Embedding (trained pairwisely)
+* Feature Engineering
+* Rank answer candidates with [*SVM-rank*](https://www.cs.cornell.edu/People/tj/svm_light/svm_rank.html)
+
+
+
+
+#### Deliverables and Goals
+I think we have achieved the expected progress according to the schedule posted in the proposal, and we believe we will be able to produce all the deliverables stated in the proposal. Here is a list of goals that we hope to achieve for the final Parallelism competition,
+* Robust Question-Answering system with quick response time (within seconds)
+* Implement parallel SVM for the ranking phase (new goal)
+* Build web server to handle question answering requests elastically (nice to have)
+* Build question answering visualizer to display the answering process (nice to have, hopefully on IOS)
+
+
 #### Plan to Show
+We aim to give an interactive demo at the Parallelism competition.
 
 <br><br>
 
 
 ## Preliminary Results
+
+We didn't have any evaluation results yet, since we were still working on parallelizing our Question-Answering system and the SVM ranker. However, we have this short video demo showing what our QA system is capable of doing for now.
 
 <iframe width="800" height="450" src="https://www.youtube.com/embed/wOyso7gFJfU" frameborder="0" allowfullscreen></iframe>
 
