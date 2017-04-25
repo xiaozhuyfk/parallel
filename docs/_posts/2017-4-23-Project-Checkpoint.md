@@ -65,4 +65,9 @@ We didn't have any evaluation results yet, since we were still working on parall
 
 ## Concerns
 
+* Schedule: While we have managed to follow the original schedule, we are still a bit left behind according to the project handout due to sequential code implementation, debugging and model training. While we have a working program, we have not fully delved into the parallel implementation, which could bear the weight of a project on it own. 
+* Managing workload: Furthermore, the communication-to-computation overhead when dealing with workload distribution to multiple workers is another area that requires our consideration. Both the number of workers spawned and the appropriate amount of work assigned to each worker requires extra time to experiment.
+* Choice of parallel method: Given the limited remaining time, we are a bit worried about our choice of implementation. There are a bunch of papers that outlines different methods to parallel SVM (e.g. row-based PSVM by Edward Y. Chang et al that both reduces memory requirement in a distributed setting and improves computation time, Parallel Sequential Minimal Optimization(PSMO) illustrated by L. J. Cao et al, that is developed using MPI(We are glad to find that there is MPI support for Python), among others). If time is not permitted, we have to decide our implementation based on theoretical knowledge, instead of implementing all of them and comparing the results.
+* Web service: We also started exploring AWS in order to host our service and encountered a little trouble currently, but we are confident that we could get rid of this problem soon enough.
+
 <br><br>
