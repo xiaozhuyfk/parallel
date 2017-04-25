@@ -2,6 +2,21 @@
 
 from flask import Flask, jsonify, make_response
 from relation_matching import modules
+import globals
+
+import argparse
+parser = argparse.ArgumentParser(description='Choose to learn or test AMA')
+
+parser.add_argument('--config',
+                    default='config.cfg',
+                    help='The configuration file to use')
+args = parser.parse_args()
+
+# Read global config
+globals.read_configuration(args.config)
+
+# Load modules
+modules.init_from_config(args)
 
 application = Flask(__name__)
 app = application
