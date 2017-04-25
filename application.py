@@ -1,6 +1,8 @@
 #!flask/bin/env python
 
 from flask import Flask, jsonify, make_response
+
+"""
 from relation_matching import modules
 import globals
 
@@ -17,6 +19,7 @@ globals.read_configuration(args.config)
 
 # Load modules
 modules.init_from_config(args)
+"""
 
 application = Flask(__name__)
 app = application
@@ -25,13 +28,13 @@ app = application
 def index():
     return "Hello, World!"
 
-@app.route('/RESTapi/questions/<string:q>', methods=['GET'])
+@app.route('/ama/<string:q>', methods=['GET'])
 def get_tasks(q):
     result = str(len(q))
     if len(result) == 0:
         abort(404)
-    top5 = modules.facts_ranker.rank(question)
-    result = [candidate.graph_str for candidate in top5]
+    #top5 = modules.facts_ranker.rank(question)
+    #result = [candidate.graph_str for candidate in top5]
     return jsonify({'response': result})
 
 @app.errorhandler(404)
