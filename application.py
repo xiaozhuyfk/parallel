@@ -15,7 +15,8 @@ def get_tasks(q):
     result = str(len(q))
     if len(result) == 0:
         abort(404)
-    result = modules.facts_ranker.rank(question)
+    top5 = modules.facts_ranker.rank(question)
+    result = [candidate.graph_str for candidate in top5]
     return jsonify({'response': result})
 
 @app.errorhandler(404)
