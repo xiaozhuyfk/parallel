@@ -368,7 +368,7 @@ class Ranker(object):
                     name = candidate.subject,
                     artist = candidate.sid,
                     id = candidate.sid,
-                    playcount = 1e7,
+                    playcount = 10,
                 )
                 nodes.append(subject_node)
 
@@ -377,7 +377,7 @@ class Ranker(object):
                 name = "-".join(candidate.relation_tokens),
                 artist = candidate.relation,
                 id = candidate.relation,
-                playcount = 5e6,
+                playcount = 8,
             )
             nodes.append(relation_node)
 
@@ -387,22 +387,13 @@ class Ranker(object):
             )
             links.append(subject_relation)
 
-            if (len(candidate.objects) < 5):
-                count = 5e6
-            elif (len(candidate.objects) < 15):
-                count = 1e6
-            elif (len(candidate.objects) < 30):
-                count = 5e5
-            else:
-                count = 1e5
-
             for idx in xrange(len(candidate.objects)):
                 object_node = dict(
                     match = 1.0,
                     name = candidate.objects[idx],
                     artist = candidate.oid[idx],
                     id = candidate.oid[idx] + "-" + candidate.objects[idx],
-                    playcount = count
+                    playcount = 5
                 )
                 nodes.append(object_node)
 
