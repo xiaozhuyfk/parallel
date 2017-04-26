@@ -342,7 +342,7 @@ class Ranker(object):
 
         self.nomalize_features(candidates)
         for candidate in candidates:
-            codecsWriteFile(self.svmTestingFeatureVectorsFile,
+            codecsWriteFile(testing_path,
                             str(candidate.feature_vector),
                             "a")
         self.svm_rank(testing_path, scores_path)
@@ -430,7 +430,7 @@ class Ranker(object):
 
         self.nomalize_features(candidates)
         for candidate in candidates:
-            codecsWriteFile(self.svmTestingFeatureVectorsFile,
+            codecsWriteFile(testing_path,
                             str(candidate.feature_vector),
                             "a")
         self.svm_rank(testing_path, scores_path)
