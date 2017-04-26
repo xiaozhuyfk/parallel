@@ -355,6 +355,70 @@ class Ranker(object):
         return [candidates[idx] for idx in top5]
 
 
+    def extract_nodes_and_links(self, candidates):
+        nodes = []
+        links = []
+        subjects = set([])
+        for candidate in candidates:
+            if (candidate.sid in subjects): continue
+            else: subjects.add(candidate.sid)
+
+            subject_node = dict(
+                match = 1.0,
+                name = candidate.subject,
+                artist = candidate.sid,
+                id = candidate.sid,
+                playcount = 1e7,
+            )
+            nodes.append(subject_node)
+
+            relation_node = dict(
+                match = 1.0,
+                name = "-".join(candidate.relation_tokens),
+                artist = candidate.relation,
+                id = candidate.relation,
+                playcount = 1e6,
+            )
+            nodes.append(relation_node)
+
+            subject_relation = dict(
+                source = candidate.sid,
+                target = candidate.relation,
+            )
+            links.append(subject_relation)
+
+            if (len(candidate.objects) < 5):
+                count = 1e6
+            elif (len(candidate.objects) < 15):
+                count = 5e5
+            elif (len(candidate.objects) < 30):
+                count = 1e5
+            else:
+                count = 5e4
+
+            for idx in xrange(len(candidate.objects)):
+                object_node = dict(
+                    match = 1.0,
+                    name = candidate.objects[idx],
+                    artist = candidate.oid[idx],
+                    id = candidate.oid[idx] + "-" + candidate.objects[idx],
+                    playcount = count
+                )
+                nodes.append(object_node)
+
+                relation = dict(
+                    source = candidate.relation,
+                    target = candidate.oid[idx] + "-" + candidate.objects[idx],
+                )
+                links.append(relation)
+
+        result = dict(
+            nodes = nodes,
+            links = links,
+        )
+
+        return result
+
     def network(self, question):
         question = question.lower()
         timestamp = '{:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now())
@@ -441,12 +505,6 @@ class Ranker(object):
         scores = [float(n) for n in codecsReadFile(scores_path).strip().split("\n")]
         top5 = np.argsort(scores)[::-1][:5]
 
-        nodes = []
-        links = []
-        for candidate in candidates:
-            subject_node = dict(
+        result = self.extract_nodes_and_links(candidates)
 
-            )
-
-
-        return [candidates[idx] for idx in top5]
+        return result

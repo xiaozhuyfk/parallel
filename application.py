@@ -35,6 +35,11 @@ def get_tasks(q):
     result = [candidate.graph_str for candidate in top5]
     return jsonify({'response': result})
 
+@app.route('/network/<string:q>', methods=["GET"])
+def network(q):
+    result = modules.facts_ranker.network(q)
+    return jsonify(result)
+
 @app.errorhandler(404)
 def no_response(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
