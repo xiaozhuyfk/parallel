@@ -1,10 +1,3 @@
-"""
-All the code for evaluation.
-
-Copyright 2015, University of Freiburg.
-
-Elmar Haussmann <haussmann@cs.uni-freiburg.de>
-"""
 from collections import namedtuple
 from dateutil import parser as dateparser
 import logging
