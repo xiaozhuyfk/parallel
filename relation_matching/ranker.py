@@ -211,9 +211,9 @@ class Ranker(object):
     def svm_rank(self, testing_path, scores_path):
         logger.info("Start SVM Ranking ...")
         cmd = [self.svmRankClassifyPath,
-               self.svmTestingFeatureVectorsFile,
+               testing_path,
                self.svmRankModelFile,
-               self.svmFactCandidateScores]
+               scores_path]
         p = subprocess.Popen(cmd, stdout = subprocess.PIPE, stderr = subprocess.STDOUT)
         p.wait()
 
@@ -270,7 +270,7 @@ class Ranker(object):
     def rank(self, question):
         question = question.lower()
         timestamp = '{:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now())
-        filename = question.encode('utf-8')[10:] + ' ' + timestamp
+        filename = question.encode('utf-8')[:10] + ' ' + timestamp
         testing_path = '/home/ubuntu/parallel/svm_result/' + filename + '.LeToRTest'
         scores_path = '/home/ubuntu/parallel/svm_result/' + filename + '.RankScore'
         codecsWriteFile(testing_path, "")
@@ -358,7 +358,7 @@ class Ranker(object):
     def network(self, question):
         question = question.lower()
         timestamp = '{:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now())
-        filename = question.encode('utf-8')[10:] + ' ' + timestamp
+        filename = question.encode('utf-8')[:10] + ' ' + timestamp
         testing_path = '/home/ubuntu/parallel/svm_result/' + filename + '.LeToRTest'
         scores_path = '/home/ubuntu/parallel/svm_result/' + filename + '.RankScore'
         codecsWriteFile(testing_path, "")
@@ -441,6 +441,12 @@ class Ranker(object):
         scores = [float(n) for n in codecsReadFile(scores_path).strip().split("\n")]
         top5 = np.argsort(scores)[::-1][:5]
 
+        nodes = []
+        links = []
+        for candidate in candidates:
+            subject_node = dict(
+
+            )
 
 
         return [candidates[idx] for idx in top5]
