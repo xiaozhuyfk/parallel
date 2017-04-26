@@ -271,8 +271,8 @@ class Ranker(object):
         question = question.lower()
         timestamp = '{:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now())
         filename = question.encode('utf-8')[10:] + ' ' + timestamp
-        testing_path = 'svm_result/' + filename + '.LeToRTest'
-        scores_path = 'svm_result/' + filename + '.RankScore'
+        testing_path = '/home/ubuntu/parallel/svm_result/' + filename + '.LeToRTest'
+        scores_path = '/home/ubuntu/parallel/svm_result/' + filename + '.RankScore'
         codecsWriteFile(testing_path, "")
 
         json = modules.facts_extractor.extract_fact_list_with_entity_linker(question)
@@ -359,8 +359,8 @@ class Ranker(object):
         question = question.lower()
         timestamp = '{:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now())
         filename = question.encode('utf-8')[10:] + ' ' + timestamp
-        testing_path = 'svm_result/' + filename + '.LeToRTest'
-        scores_path = 'svm_result/' + filename + '.RankScore'
+        testing_path = '/home/ubuntu/parallel/svm_result/' + filename + '.LeToRTest'
+        scores_path = '/home/ubuntu/parallel/svm_result/' + filename + '.RankScore'
         codecsWriteFile(testing_path, "")
 
         json = modules.facts_extractor.extract_fact_list_with_entity_linker(question)
