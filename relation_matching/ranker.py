@@ -271,8 +271,8 @@ class Ranker(object):
         question = question.lower()
         timestamp = '{:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now())
         filename = question.encode('utf-8')[10:] + ' ' + timestamp
-        testing_path = filename + '.LeToRTest'
-        scores_path = filename + '.RankScore'
+        testing_path = 'svm_result/' + filename + '.LeToRTest'
+        scores_path = 'svm_result/' + filename + '.RankScore'
         codecsWriteFile(testing_path, "")
 
         json = modules.facts_extractor.extract_fact_list_with_entity_linker(question)
@@ -350,7 +350,7 @@ class Ranker(object):
         logger.info("SVM Ranking time: %.2f ms." % duration)
 
         # Choose answers from candidates
-        scores = [float(n) for n in codecsReadFile(self.svmFactCandidateScores).strip().split("\n")]
+        scores = [float(n) for n in codecsReadFile(scores_path).strip().split("\n")]
         top5 = np.argsort(scores)[::-1][:5]
         return [candidates[idx] for idx in top5]
 
@@ -359,8 +359,8 @@ class Ranker(object):
         question = question.lower()
         timestamp = '{:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now())
         filename = question.encode('utf-8')[10:] + ' ' + timestamp
-        testing_path = filename + '.LeToRTest'
-        scores_path = filename + '.RankScore'
+        testing_path = 'svm_result/' + filename + '.LeToRTest'
+        scores_path = 'svm_result/' + filename + '.RankScore'
         codecsWriteFile(testing_path, "")
 
         json = modules.facts_extractor.extract_fact_list_with_entity_linker(question)
@@ -438,10 +438,9 @@ class Ranker(object):
         logger.info("SVM Ranking time: %.2f ms." % duration)
 
         # Choose answers from candidates
-        scores = [float(n) for n in codecsReadFile(self.svmFactCandidateScores).strip().split("\n")]
-        idx = np.argmax(scores)
+        scores = [float(n) for n in codecsReadFile(scores_path).strip().split("\n")]
         top5 = np.argsort(scores)[::-1][:5]
-        #best_candidate = candidates[idx]
-        #print best_candidate.subject
-        #print best_candidate.relation
+
+
+
         return [candidates[idx] for idx in top5]
