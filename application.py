@@ -28,7 +28,7 @@ app = application
 def index():
     return "Hello, World!"
 
-@app.route('/parallel/ama/<string:q>', methods=['GET'])
+@app.route('/REST-api/ama/<string:q>', methods=['GET'])
 def get_tasks(q):
     result = str(len(q))
     if len(result) == 0:
