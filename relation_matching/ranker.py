@@ -5,6 +5,7 @@ from util import (
     codecsWriteFile,
     codecsReadFile,
 )
+import datetime
 import subprocess
 import re
 import numpy as np
@@ -207,7 +208,7 @@ class Ranker(object):
         p = subprocess.Popen(cmd, stdout = subprocess.PIPE, stderr = subprocess.STDOUT)
         p.wait()
 
-    def svm_rank(self):
+    def svm_rank(self, testing_path, scores_path):
         logger.info("Start SVM Ranking ...")
         cmd = [self.svmRankClassifyPath,
                self.svmTestingFeatureVectorsFile,
@@ -267,8 +268,13 @@ class Ranker(object):
         return model
 
     def rank(self, question):
-        codecsWriteFile(self.svmTestingFeatureVectorsFile, "")
         question = question.lower()
+        timestamp = '{:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now())
+        filename = question.encode('utf-8')[10:] + ' ' + timestamp
+        testing_path = filename + '.LeToRTest'
+        scores_path = filename + '.RankScore'
+        codecsWriteFile(testing_path, "")
+
         json = modules.facts_extractor.extract_fact_list_with_entity_linker(question)
         if json == []:
             return []
@@ -339,7 +345,95 @@ class Ranker(object):
             codecsWriteFile(self.svmTestingFeatureVectorsFile,
                             str(candidate.feature_vector),
                             "a")
-        self.svm_rank()
+        self.svm_rank(testing_path, scores_path)
+        duration = (time.time() - start_time) * 1000
+        logger.info("SVM Ranking time: %.2f ms." % duration)
+
+        # Choose answers from candidates
+        scores = [float(n) for n in codecsReadFile(self.svmFactCandidateScores).strip().split("\n")]
+        top5 = np.argsort(scores)[::-1][:5]
+        return [candidates[idx] for idx in top5]
+
+
+    def network(self, question):
+        question = question.lower()
+        timestamp = '{:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now())
+        filename = question.encode('utf-8')[10:] + ' ' + timestamp
+        testing_path = filename + '.LeToRTest'
+        scores_path = filename + '.RankScore'
+        codecsWriteFile(testing_path, "")
+
+        json = modules.facts_extractor.extract_fact_list_with_entity_linker(question)
+        if json == []:
+            return []
+
+        start_time = time.time()
+        candidates = []
+        for ie in json:
+            subject = ie["subject"]
+            sid = ie["sid"]
+            score = ie["score"]
+            relations = ie["relations"]
+            for rel in relations:
+                fact_candidate = FactCandidate(self.config_options,
+                                              question,
+                                              subject,
+                                              sid,
+                                              score,
+                                              rel,
+                                              relations[rel])
+                fact_candidate.extract_features()
+                candidates.append(fact_candidate)
+        duration = (time.time() - start_time) * 1000
+        logger.info("Feature Extraction time: %.2f ms." % duration)
+
+        start_time = time.time()
+        pairwise_predictions = self.pairwise_model.predict(candidates, 28).flatten()
+        pairwise_trigram_predictions = self.pairwise_trigram.predict(candidates, 203).flatten()
+        jointpairwise_predictions = self.jointpairwise.predict(
+            candidates,
+            28,
+            'query_tokens',
+            'relation_tokens'
+        ).flatten()
+        jointpairwise_trigram_predictions = self.jointpairwise_trigram.predict(
+            candidates,
+            203,
+            'query_trigram',
+            'relation_trigram'
+        ).flatten()
+        embedding_predictions = self.embedding.predict(
+            candidates,
+            28,
+            'query_tokens',
+            'relation_tokens'
+        ).flatten()
+        embedding_trigram_predictions = self.embedding_trigram.predict(
+            candidates,
+            203,
+            'query_trigram',
+            'relation_trigram'
+        ).flatten()
+        duration = (time.time() - start_time) * 1000
+        logger.info("Relation Score Computation time: %.2f ms." % duration)
+
+
+        start_time = time.time()
+        for idx in xrange(len(candidates)):
+            candidate = candidates[idx]
+            candidate.add_feature(jointpairwise_predictions[idx])
+            candidate.add_feature(jointpairwise_trigram_predictions[idx])
+            candidate.add_feature(embedding_predictions[idx])
+            candidate.add_feature(embedding_trigram_predictions[idx])
+            candidate.add_feature(pairwise_predictions[idx])
+            candidate.add_feature(pairwise_trigram_predictions[idx])
+
+        self.nomalize_features(candidates)
+        for candidate in candidates:
+            codecsWriteFile(self.svmTestingFeatureVectorsFile,
+                            str(candidate.feature_vector),
+                            "a")
+        self.svm_rank(testing_path, scores_path)
         duration = (time.time() - start_time) * 1000
         logger.info("SVM Ranking time: %.2f ms." % duration)
 
