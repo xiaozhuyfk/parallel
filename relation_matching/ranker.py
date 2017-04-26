@@ -360,24 +360,24 @@ class Ranker(object):
         links = []
         subjects = set([])
         for candidate in candidates:
-            if (candidate.sid in subjects): continue
-            else: subjects.add(candidate.sid)
+            if (candidate.sid not in subjects):
+                subjects.add(candidate.sid)
 
-            subject_node = dict(
-                match = 1.0,
-                name = candidate.subject,
-                artist = candidate.sid,
-                id = candidate.sid,
-                playcount = 1e7,
-            )
-            nodes.append(subject_node)
+                subject_node = dict(
+                    match = 1.0,
+                    name = candidate.subject,
+                    artist = candidate.sid,
+                    id = candidate.sid,
+                    playcount = 1e7,
+                )
+                nodes.append(subject_node)
 
             relation_node = dict(
                 match = 1.0,
                 name = "-".join(candidate.relation_tokens),
                 artist = candidate.relation,
                 id = candidate.relation,
-                playcount = 1e6,
+                playcount = 5e6,
             )
             nodes.append(relation_node)
 
@@ -388,13 +388,13 @@ class Ranker(object):
             links.append(subject_relation)
 
             if (len(candidate.objects) < 5):
-                count = 1e6
+                count = 5e6
             elif (len(candidate.objects) < 15):
-                count = 5e5
+                count = 1e6
             elif (len(candidate.objects) < 30):
-                count = 1e5
+                count = 5e5
             else:
-                count = 5e4
+                count = 1e5
 
             for idx in xrange(len(candidate.objects)):
                 object_node = dict(
