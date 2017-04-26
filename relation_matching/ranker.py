@@ -375,7 +375,7 @@ class Ranker(object):
             relation_node = dict(
                 match = 1.0,
                 name = "-".join(candidate.relation_tokens),
-                artist = candidate.relation,
+                artist = "RELATION",
                 id = candidate.relation,
                 playcount = 8,
             )
