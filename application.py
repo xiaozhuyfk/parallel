@@ -25,8 +25,8 @@ modules.init_from_config(args)
 
 
 context = SSL.Context(SSL.SSLv23_METHOD)
-cer = os.path.join(os.path.dirname(__file__), 'resources/udara.com.crt')
-key = os.path.join(os.path.dirname(__file__), 'resources/udara.com.key')
+cer = os.path.join(os.path.dirname(__file__), 'certs/development.crt')
+key = os.path.join(os.path.dirname(__file__), 'certs/development.key')
 
 application = Flask(__name__)
 app = application
