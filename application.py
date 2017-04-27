@@ -2,6 +2,7 @@
 
 from flask import Flask, jsonify, make_response
 from flask_cors import CORS, cross_origin
+from flask_sslify import SSLify
 
 from relation_matching import modules
 import globals
@@ -22,7 +23,7 @@ modules.init_from_config(args)
 
 application = Flask(__name__)
 app = application
-CORS(app)
+SSLify(CORS(app))
 
 @app.route('/')
 def index():

@@ -510,7 +510,7 @@ class Ranker(object):
         top5 = [candidates[idx] for idx in np.argsort(scores)[::-1][:5]]
 
         graph = self.extract_nodes_and_links(candidates)
-        top5 = self.extract_nodes_and_links(top5)
+        top5 = self.extract_nodes_and_links(top5, "top")
         result = dict(
             graph = graph,
             top5 = top5
