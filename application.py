@@ -24,9 +24,10 @@ modules.init_from_config(args)
 
 
 
-context = SSL.Context(SSL.SSLv23_METHOD)
+#context = SSL.Context(SSL.SSLv23_METHOD)
 cer = os.path.join(os.path.dirname(__file__), 'certs/development.crt')
 key = os.path.join(os.path.dirname(__file__), 'certs/development.key')
+context = (cer, key)
 
 application = Flask(__name__)
 app = application
