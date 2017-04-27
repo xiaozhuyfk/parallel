@@ -49,4 +49,4 @@ def no_response(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
 
 if __name__ == '__main__':
-    app.run(debug=True, threaded=True, host='0.0.0.0')
+    app.run(debug=True, threaded=True, host='0.0.0.0', port=443)
