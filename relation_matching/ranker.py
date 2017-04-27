@@ -355,11 +355,12 @@ class Ranker(object):
         return [candidates[idx] for idx in top5]
 
 
-    def extract_nodes_and_links(self, candidates):
+    def extract_nodes_and_links(self, candidates, suffix=""):
         nodes = []
         links = []
         subjects = set([])
-        for candidate in candidates:
+        for i in xrange(len(candidates)):
+            candidate = candidates[i]
             if (candidate.sid not in subjects):
                 subjects.add(candidate.sid)
 
@@ -367,35 +368,42 @@ class Ranker(object):
                     match = 1.0,
                     name = candidate.subject,
                     artist = candidate.sid,
-                    id = candidate.sid,
+                    id = candidate.sid + suffix,
                     playcount = 10,
                 )
                 nodes.append(subject_node)
+
+            if suffix == "top":
+                count = 10 - i
+            else:
+                count = 8
 
             relation_node = dict(
                 match = 1.0,
                 name = "-".join(candidate.relation_tokens),
                 artist = "RELATION",
-                id = candidate.relation,
-                playcount = 8,
+                id = candidate.relation + suffix,
+                playcount = count,
             )
             if candidate.relation not in subjects:
                 subjects.add(candidate.relation)
                 nodes.append(relation_node)
 
             subject_relation = dict(
-                source = candidate.sid,
-                target = candidate.relation,
+                source = candidate.sid + suffix,
+                target = candidate.relation + suffix,
             )
             links.append(subject_relation)
 
             for idx in xrange(len(candidate.objects)):
+                if idx > 20: break
+
                 object_id = candidate.oid[idx] + "-" + candidate.objects[idx] + "-" + candidate.relation
                 object_node = dict(
                     match = 1.0,
                     name = candidate.objects[idx],
                     artist = candidate.oid[idx],
-                    id = object_id,
+                    id = object_id + suffix,
                     playcount = 5
                 )
                 if object_id not in subjects:
@@ -403,8 +411,8 @@ class Ranker(object):
                     nodes.append(object_node)
 
                 relation = dict(
-                    source = candidate.relation,
-                    target = object_id,
+                    source = candidate.relation + suffix,
+                    target = object_id + suffix,
                 )
                 links.append(relation)
 
