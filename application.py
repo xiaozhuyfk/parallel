@@ -23,7 +23,8 @@ modules.init_from_config(args)
 
 application = Flask(__name__)
 app = application
-SSLify(CORS(app))
+CORS(app)
+SSLify(app)
 
 @app.route('/')
 def index():
