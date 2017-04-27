@@ -8,6 +8,7 @@ from util import (
 import datetime
 import subprocess
 import re
+import threading
 import numpy as np
 from model import (
     LSTMPointwise,
@@ -149,6 +150,17 @@ class FactCandidate(object):
 
         return self.feature_vector
 
+
+class sim_thread (threading.Thread):
+
+    def __init__(self, threadID, name, counter):
+        threading.Thread.__init__(self)
+        self.threadID = threadID
+        self.name = name
+        self.counter = counter
+
+    def run(self):
+        pass
 
 
 
@@ -378,15 +390,16 @@ class Ranker(object):
             else:
                 count = 8
 
+            relation_id = "-".join([candidate.sid, candidate.relation, suffix])
             relation_node = dict(
                 match = 1.0,
                 name = "-".join(candidate.relation_tokens),
                 artist = "RELATION",
-                id = candidate.relation + suffix,
+                id = relation_id,
                 playcount = count,
             )
-            if candidate.relation not in subjects:
-                subjects.add(candidate.relation)
+            if relation_id not in subjects:
+                subjects.add(relation_id)
                 nodes.append(relation_node)
 
             subject_relation = dict(
