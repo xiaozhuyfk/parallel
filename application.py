@@ -2,7 +2,8 @@
 
 from flask import Flask, jsonify, make_response
 from flask_cors import CORS, cross_origin
-from flask_sslify import SSLify
+from OpenSSL import SSL
+import os
 
 from relation_matching import modules
 import globals
@@ -21,10 +22,15 @@ globals.read_configuration(args.config)
 # Load modules
 modules.init_from_config(args)
 
+
+
+context = SSL.Context(SSL.SSLv23_METHOD)
+cer = os.path.join(os.path.dirname(__file__), 'resources/udara.com.crt')
+key = os.path.join(os.path.dirname(__file__), 'resources/udara.com.key')
+
 application = Flask(__name__)
 app = application
 CORS(app)
-SSLify(app)
 
 @app.route('/')
 def index():
@@ -49,4 +55,4 @@ def no_response(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
 
 if __name__ == '__main__':
-    app.run(debug=True, threaded=True, host='0.0.0.0', port=443)
+    app.run(debug=True, threaded=True, host='0.0.0.0', port=443, ssl_context=context)
