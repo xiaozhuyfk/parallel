@@ -499,8 +499,13 @@ class Ranker(object):
 
         # Choose answers from candidates
         scores = [float(n) for n in codecsReadFile(scores_path).strip().split("\n")]
-        top5 = np.argsort(scores)[::-1][:5]
+        top5 = [candidates[idx] for idx in np.argsort(scores)[::-1][:5]]
 
-        result = self.extract_nodes_and_links(candidates)
+        graph = self.extract_nodes_and_links(candidates)
+        top5 = self.extract_nodes_and_links(top5)
+        result = dict(
+            graph = graph,
+            top5 = top5
+        )
 
         return result
