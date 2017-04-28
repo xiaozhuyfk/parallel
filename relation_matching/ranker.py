@@ -424,7 +424,7 @@ class Ranker(object):
                     nodes.append(object_node)
 
                 relation = dict(
-                    source = candidate.relation + suffix,
+                    source = relation_id,
                     target = object_id + suffix,
                 )
                 links.append(relation)
