@@ -395,7 +395,7 @@ class Ranker(object):
                 match = 1.0,
                 name = "-".join(candidate.relation_tokens),
                 artist = candidate.relation_tokens[-1],
-                id = relation_id,
+                id = relation_id + suffix,
                 playcount = count,
             )
             if relation_id not in subjects:
@@ -404,7 +404,7 @@ class Ranker(object):
 
             subject_relation = dict(
                 source = candidate.sid + suffix,
-                target = candidate.relation + suffix,
+                target = relation_id + suffix,
             )
             links.append(subject_relation)
 
@@ -424,7 +424,7 @@ class Ranker(object):
                     nodes.append(object_node)
 
                 relation = dict(
-                    source = relation_id,
+                    source = relation_id + suffix,
                     target = object_id + suffix,
                 )
                 links.append(relation)
