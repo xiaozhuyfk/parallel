@@ -23,3 +23,5 @@ training_model/
 freebase_dump/
 support_sentence/
 support_sentence_stat/
+docs/_site/
+docs/.sass-cache/
