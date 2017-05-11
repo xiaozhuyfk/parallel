@@ -3,7 +3,11 @@ from __future__ import print_function
 import logging
 import globals
 import sys
+import time
 from relation_matching import modules
+from relation_matching.evaluation import load_eval_queries
+from relation_matching.util import writeFile
+
 
 logging.basicConfig(format='%(asctime)s : %(levelname)s '
                            ': %(module)s : %(message)s',
@@ -33,7 +37,17 @@ def play():
             print(candidate.graph_str)
 
 def test(dataset):
-    print("test")
+    queries = load_eval_queries(dataset)
+    file_path = "/home/ubuntu/parallel/duration.txt"
+    writeFile(file_path, "")
+    for query in queries:
+        question = query.utterance
+        start_time = time.time()
+        modules.facts_ranker.rank(question)
+        duration = (time.time() - start_time) * 1000
+        writeFile(file_path, str(duration) + '\n', 'a')
+
+
 
 def main():
     import argparse
