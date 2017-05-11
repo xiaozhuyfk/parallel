@@ -37,7 +37,7 @@ in which the subsequence "obama" match the alias of the entity "Barack Obama" wi
 After identifying the root entities of the question, we can generate the list of fact candidates by extending the root entities with all possible outward edges (relationship) in Freebase. Some example fact candidates generated from the root entity "Barack Obama" are illustrated in the following figure. 
 
 <div style="text-align:center">
-<img src="/images/candidates.png" />
+<img src="https://xiaozhuyfk.github.io/parallel/images/candidates.png" />
 </div>
 
 
@@ -49,7 +49,7 @@ After identifying the root entities of the question, we can generate the list of
 Long Short Term Memory networks – usually just called “LSTMs” – are a special kind of RNN, capable of learning long-term dependencies. The motivation for using LSTM is that LSTM has been proved to be quite effective when solving machine translation problems, and matching relations can be considered as a form of translation.
 
 <div style="text-align:center">
-<img src="/images/LSTM3-chain.png" />
+<img src="https://xiaozhuyfk.github.io/parallel/images/LSTM3-chain.png" />
 </div>
 
 Each Bi-directional LSTM model is trained pairwisely. Consider there are total of $$n$$ fact candidates for the query $$q$$. We pair them up and get a total of $${n \choose 2} = \frac{n(n-1)}{2}$$ training instances for query $$q$$. For each training instance pair $$(f_1, f_2)$$, the corresponding label will be either $$1$$ or $$-1$$ depending on which fact candidate has higher $F_1$ measure. The $$F_1$$ measure of a fact candidate is computed by the precision and recall of the answers compared with the gold answers provided by the dataset. The pair of fact candidates will then be fed into a pair of identical Bi-directional LSTM model ranking units, and the ranking score of each fact candidate $f$ can later be computed by the ranking unit after the training process.
@@ -61,7 +61,7 @@ $$\Big[ \text{#ba, bar, ara, rac, ack, ck#, #ob, oba, bam, ama, ma#}\Big]$$
 These tokens will be input to the embedding layer of each model. The structures of the ranking units for both deep learning models are illustrated below.
 
 <div style="text-align:center">
-<img src="/images/lstm.png" />
+<img src="https://xiaozhuyfk.github.io/parallel/images/lstm.png" />
 </div>
 
 In the LSTM Ranking model, the ranking unit will take a single sentence as input consists of the question, subject and relation tokens. With each token input into the embedding matrix, a long list of embedding vectors is passed to the Bidirectional LSTM layer with output size of 1, so that the output of the LSTM layer will be the ranking score of the input fact candidate.

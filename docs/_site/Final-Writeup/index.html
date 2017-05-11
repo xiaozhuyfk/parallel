@@ -107,14 +107,14 @@ and we will cover the following topics in this report:</p>
 <p>After identifying the root entities of the question, we can generate the list of fact candidates by extending the root entities with all possible outward edges (relationship) in Freebase. Some example fact candidates generated from the root entity “Barack Obama” are illustrated in the following figure.</p>
 
 <div style="text-align:center">
-<img src="/images/candidates.png" />
+<img src="https://xiaozhuyfk.github.io/parallel/images/candidates.png" />
 </div>
 
 <h4 id="relation-matching-with-bi-directional-lstm">Relation Matching with Bi-directional LSTM</h4>
 <p>Long Short Term Memory networks – usually just called “LSTMs” – are a special kind of RNN, capable of learning long-term dependencies. The motivation for using LSTM is that LSTM has been proved to be quite effective when solving machine translation problems, and matching relations can be considered as a form of translation.</p>
 
 <div style="text-align:center">
-<img src="/images/LSTM3-chain.png" />
+<img src="https://xiaozhuyfk.github.io/parallel/images/LSTM3-chain.png" />
 </div>
 
 <p>Each Bi-directional LSTM model is trained pairwisely. Consider there are total of <script type="math/tex">n</script> fact candidates for the query <script type="math/tex">q</script>. We pair them up and get a total of <script type="math/tex">{n \choose 2} = \frac{n(n-1)}{2}</script> training instances for query <script type="math/tex">q</script>. For each training instance pair <script type="math/tex">(f_1, f_2)</script>, the corresponding label will be either <script type="math/tex">1</script> or <script type="math/tex">-1</script> depending on which fact candidate has higher $F_1$ measure. The <script type="math/tex">F_1</script> measure of a fact candidate is computed by the precision and recall of the answers compared with the gold answers provided by the dataset. The pair of fact candidates will then be fed into a pair of identical Bi-directional LSTM model ranking units, and the ranking score of each fact candidate $f$ can later be computed by the ranking unit after the training process.</p>
@@ -126,7 +126,7 @@ and we will cover the following topics in this report:</p>
 <p>These tokens will be input to the embedding layer of each model. The structures of the ranking units for both deep learning models are illustrated below.</p>
 
 <div style="text-align:center">
-<img src="/images/lstm.png" />
+<img src="https://xiaozhuyfk.github.io/parallel/images/lstm.png" />
 </div>
 
 <p>In the LSTM Ranking model, the ranking unit will take a single sentence as input consists of the question, subject and relation tokens. With each token input into the embedding matrix, a long list of embedding vectors is passed to the Bidirectional LSTM layer with output size of 1, so that the output of the LSTM layer will be the ranking score of the input fact candidate.</p>
