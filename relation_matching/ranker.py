@@ -311,6 +311,8 @@ class Ranker(object):
         duration = (time.time() - start_time) * 1000
         logger.info("Feature Extraction time: %.2f ms." % duration)
 
+        if len(candidates) == 0: return []
+
         start_time = time.time()
         pairwise_predictions = self.pairwise_model.predict(candidates, 28).flatten()
         pairwise_trigram_predictions = self.pairwise_trigram.predict(candidates, 203).flatten()

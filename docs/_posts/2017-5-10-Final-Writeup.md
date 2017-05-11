@@ -31,7 +31,7 @@ For example, the input question "who inspired obama?" will produce possible subs
 
 After identifying the root entities of the question, we can generate the list of fact candidates by extending the root entities with all possible outward edges (relationship) in Freebase. Some example fact candidates generated from the root entity "Barack Obama" are illustrated in the following figure. 
 
-![_config.yml]({{ site.baseurl }}/images/.png)
+![_config.yml]({{ site.baseurl }}/images/candidates.png)
 
 
 #### Relation Matching with Bi-directional LSTM
