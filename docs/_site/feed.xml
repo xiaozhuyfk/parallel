@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-05-11T16:15:16-04:00</updated><id>http://localhost:4000/</id><title type="html">Ask Me Anything</title><subtitle>Distributed Question Answering System with Freebase</subtitle><entry><title type="html">Final Writeup</title><link href="http://localhost:4000/Final-Writeup/" rel="alternate" type="text/html" title="Final Writeup" /><published>2017-05-10T00:00:00-04:00</published><updated>2017-05-10T00:00:00-04:00</updated><id>http://localhost:4000/Final-Writeup</id><content type="html" xml:base="http://localhost:4000/Final-Writeup/">&lt;p&gt;This document is a final report of our &lt;strong&gt;Distributed Question Answering System&lt;/strong&gt; project for the course &lt;strong&gt;15-418 Parallel Computer Architecture and Programming&lt;/strong&gt;, 
+and we will cover the following topics in this report:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Summary&lt;/li&gt;
+  &lt;li&gt;Background&lt;/li&gt;
+  &lt;li&gt;Approach&lt;/li&gt;
+  &lt;li&gt;Results&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;summary&quot;&gt;SUMMARY&lt;/h2&gt;
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;background&quot;&gt;BACKGROUND&lt;/h2&gt;
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;approach&quot;&gt;APPROACH&lt;/h2&gt;
+&lt;h4 id=&quot;fact-candidate-generation&quot;&gt;Fact Candidate Generation&lt;/h4&gt;
+&lt;p&gt;We used the Entity Linker in the Aqqu system &lt;sup id=&quot;fnref:fn1&quot;&gt;&lt;a href=&quot;#fn:fn1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;. During the entity linking process, each subsequence &lt;script type=&quot;math/tex&quot;&gt;s&lt;/script&gt; of the query text is matched with all Freebase entities that have name or alias that equal to &lt;script type=&quot;math/tex&quot;&gt;s&lt;/script&gt;. These Freebase entities are the root entities recognized from the question, and the popolarity score computed with the CrossWikis dataset &lt;sup id=&quot;fnref:fn8&quot;&gt;&lt;a href=&quot;#fn:fn8&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt; is added to the feature vector in the purpose of measuring entity linking accuracy. The CrossWikis dataset was created by web crawling hyperlinks of Wikipedia entities, and it could be used to measure the empirical distribution over Wikipedia entities. For entities that are not covered by CrossWikis, we only consider the exact name match.&lt;/p&gt;
+
+&lt;p&gt;For example, the input question “who inspired obama?” will produce possible subsequences such as &lt;script type=&quot;math/tex&quot;&gt;\Big\{ \text{&quot;who inspired&quot;}, \text{&quot;inspired obama&quot;}, \text{&quot;obama&quot;}, ...\Big\}&lt;/script&gt;, in which the subsequence “obama” match the alias of the entity “Barack Obama” with popularity score of &lt;script type=&quot;math/tex&quot;&gt;0.9029&lt;/script&gt;.&lt;/p&gt;
+
+&lt;p&gt;After identifying the root entities of the question, we can generate the list of fact candidates by extending the root entities with all possible outward edges (relationship) in Freebase. Some example fact candidates generated from the root entity “Barack Obama” are illustrated in the following figure.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/.png&quot; alt=&quot;_config.yml&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;relation-matching-with-bi-directional-lstm&quot;&gt;Relation Matching with Bi-directional LSTM&lt;/h4&gt;
+
+&lt;h4 id=&quot;distributed-question-relation-similarity-computation&quot;&gt;Distributed Question-Relation Similarity Computation&lt;/h4&gt;
+&lt;p&gt;Given the large amount of triplets to be searched, it provided our group sufficient motivation to distribute the computation to multiple nodes across the network. Each query request can be packaged and sent to a pool of workers, such that data-parallelism can be leveraged upon. In order to achieve this goal, we eventually decided the following structure:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;We adapted a three-level pipelined structure. The ventilator is the producer of the queries and is responsible for packaging the data and sending jobs to workers. The workers are the intermediate consumers of the pipeline and are accountable of the most CPU intensive work. Instead of sending the result back to the producer, the workers will send the result downstream to a common result collector to avoid excessive communication traffic on the producer side. It also reduces contention for physical resources inside the ventilator. If further iterations are required, the message could be sent back from result manager to ventilator in a message batching manner, which will also be illustrated later.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;In order to distribute the data efficiently, we adapted asynchronous socket programming that could be deployed to multiple machines with ease. Given the few dependencies on the queries, as well as the flowing query processing pattern, it makes an asynchronous queue structure preferable. Additionally we used the ventilator to dynamically monitor the queue size of each worker to maintain load-balancing. Requests on socket are scheduled in a round-robin manner out of the concerns of simplicity and unpredictiveness of exact location of the message (ventilator’s buffer, wire, worker’s buffer, to name a few). Neither shared memory nor pipe structure was considered in this scenario, as we are distributing the requests across the network.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Lastly distributing the data has the additional potential benefit of allowing queries too large to fit into one CPU’s memory to be used, which could be useful when larger knowledge base is incorporated into our application.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;learning-to-rank&quot;&gt;Learning-to-Rank&lt;/h4&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;results&quot;&gt;RESULTS&lt;/h2&gt;
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;references&quot;&gt;REFERENCES&lt;/h2&gt;
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;work-distribution&quot;&gt;WORK DISTRIBUTION&lt;/h2&gt;
+&lt;p&gt;Equal work was performed by both project members.
+&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;div class=&quot;footnotes&quot;&gt;
+  &lt;ol&gt;
+    &lt;li id=&quot;fn:fn1&quot;&gt;
+      &lt;p&gt;H. Bast and E. Haussmann. More accurate question answering on freebase. In Proceedings of the 24th ACM International on Conference on Information and Knowledge Management, CIKM ’15, pages 1431–1440, New York, NY, USA, 2015. ACM.&amp;nbsp;&lt;a href=&quot;#fnref:fn1&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:fn8&quot;&gt;
+      &lt;p&gt;V. I. Spitkovsky and A. X. Chang. A cross-lingual dictionary for english wikipedia concepts. In N. C. C. Chair), K. Choukri, T. Declerck, M. U. Doan, B. Maegaard, J. Mariani, A. Moreno, J. Odijk, and S. Piperidis, editors, Proceedings of the Eight International Conference on Language Resources and Evaluation (LREC’12), Istanbul, Turkey, may 2012. European Language Resources Association (ELRA).&amp;nbsp;&lt;a href=&quot;#fnref:fn8&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;</content><author><name></name></author><summary type="html">This document is a final report of our Distributed Question Answering System project for the course 15-418 Parallel Computer Architecture and Programming, and we will cover the following topics in this report: Summary Background Approach Results</summary></entry><entry><title type="html">Project Checkpoint</title><link href="http://localhost:4000/Project-Checkpoint/" rel="alternate" type="text/html" title="Project Checkpoint" /><published>2017-04-23T00:00:00-04:00</published><updated>2017-04-23T00:00:00-04:00</updated><id>http://localhost:4000/Project-Checkpoint</id><content type="html" xml:base="http://localhost:4000/Project-Checkpoint/">&lt;p&gt;This document is a checkpoint review of our &lt;strong&gt;Distributed Question Answering System&lt;/strong&gt; project for the course &lt;strong&gt;15-418 Parallel Computer Architecture and Programming&lt;/strong&gt;, and we will cover the following topics in this report:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Current Status and Future Schedule&lt;/li&gt;
+  &lt;li&gt;Summary of Work&lt;/li&gt;
+  &lt;li&gt;Preliminary Results&lt;/li&gt;
+  &lt;li&gt;Concerns&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;current-status--future-schedule&quot;&gt;CURRENT STATUS &amp;amp; FUTURE SCHEDULE&lt;/h2&gt;
+
+&lt;p&gt;The following table shows the current status of our project, and the schedule for the future two weeks segmented into half-week periods.&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Date&lt;/th&gt;
+      &lt;th&gt;Objectives&lt;/th&gt;
+      &lt;th&gt;Status&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2017.04.10&lt;/td&gt;
+      &lt;td&gt;Pre-process Freebase data, split and load into multiple databases. Finalize the Question Answering system structure: entity recognition, query candidate expansion, ranking …&lt;/td&gt;
+      &lt;td&gt;Done&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2017.04.17&lt;/td&gt;
+      &lt;td&gt;Train the Bi-diretional LSTM model on the Webquestions dataset in order to compute sentence similarity. Continue working on building the Question Answering system.&lt;/td&gt;
+      &lt;td&gt;Done&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2017.04.24&lt;/td&gt;
+      &lt;td&gt;Start working on AMA web service. Distribute computation of each fact candidate to multiple worker nodes.&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt;Start working on implementing parallel SVM.&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2017.05.01&lt;/td&gt;
+      &lt;td&gt;Finalize implementation of the parallel version of SVM.&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt;Combine all components and set up web service.&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2017.05.08&lt;/td&gt;
+      &lt;td&gt;Finalize report and presentation. Start working on web service and Question-Answering visualizer if we have time.&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;summary-of-work&quot;&gt;Summary of Work&lt;/h2&gt;
+
+&lt;p&gt;For the last two weeks, we’ve been working on building the entire Question-Answering system from scratch with the following components:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Entity Linker with &lt;a href=&quot;https://tagme.d4science.org/tagme/&quot;&gt;&lt;em&gt;TagMe&lt;/em&gt;&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Facts Candidates Extraction by sending SPARQL queries to Virtuoso database&lt;/li&gt;
+  &lt;li&gt;Compute similarity scores with Bi-directional LSTM with pre-trained Embedding (trained pairwisely)&lt;/li&gt;
+  &lt;li&gt;Feature Engineering&lt;/li&gt;
+  &lt;li&gt;Rank answer candidates with &lt;a href=&quot;https://www.cs.cornell.edu/People/tj/svm_light/svm_rank.html&quot;&gt;&lt;em&gt;SVM-rank&lt;/em&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;deliverables-and-goals&quot;&gt;Deliverables and Goals&lt;/h4&gt;
+&lt;p&gt;I think we have achieved the expected progress according to the schedule posted in the proposal, and we believe we will be able to produce all the deliverables stated in the proposal. Here is a list of goals that we hope to achieve for the final Parallelism competition,&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Robust Question-Answering system with quick response time (within seconds)&lt;/li&gt;
+  &lt;li&gt;Implement parallel SVM for the ranking phase (new goal)&lt;/li&gt;
+  &lt;li&gt;Build web server to handle question answering requests elastically (nice to have)&lt;/li&gt;
+  &lt;li&gt;Build question answering visualizer to display the answering process (nice to have, hopefully on IOS)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;plan-to-show&quot;&gt;Plan to Show&lt;/h4&gt;
+&lt;p&gt;We aim to give an interactive demo at the Parallelism competition.&lt;/p&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;preliminary-results&quot;&gt;Preliminary Results&lt;/h2&gt;
+
+&lt;p&gt;We didn’t have any evaluation results yet, since we were still working on parallelizing our Question-Answering system and the SVM ranker. However, we have this short video demo showing what our QA system is capable of doing for now.&lt;/p&gt;
+
+&lt;iframe width=&quot;800&quot; height=&quot;450&quot; src=&quot;https://www.youtube.com/embed/wOyso7gFJfU&quot; frameborder=&quot;0&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;concerns&quot;&gt;Concerns&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Schedule: While we have managed to follow the original schedule, we are still a bit behind the project handout due to sequential code implementation, debugging and model training. While we have a working program, we have not fully delved into the parallel implementation, which could bear the weight of a project on its own.&lt;/li&gt;
+  &lt;li&gt;Managing workload: Furthermore, the communication-to-computation overhead when dealing with workload distribution to multiple workers is another area that requires our consideration. Both the number of workers spawned and the appropriate amount of work assigned to each worker require extra time to experiment.&lt;/li&gt;
+  &lt;li&gt;Choice of parallel method: Given the limited remaining time, we are a bit worried about our choice of implementation. There are a bunch of papers that outlines different methods to parallel SVM (e.g. row-based PSVM by Edward Y. Chang et al that both reduces memory requirement in a distributed setting and improves computation time, Parallel Sequential Minimal Optimization(PSMO) illustrated by L. J. Cao et al, that is developed using MPI(We are glad to find that there is MPI support for Python), among others). If time is not allowed, we have to decide our implementation based on theoretical knowledge, rather than implementing all of them and comparing the results.&lt;/li&gt;
+  &lt;li&gt;Web service: Recently we also started exploring AWS in order to host our service and encountered a little trouble, but we are confident that we could get rid of this problem soon enough.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">This document is a checkpoint review of our Distributed Question Answering System project for the course 15-418 Parallel Computer Architecture and Programming, and we will cover the following topics in this report: Current Status and Future Schedule Summary of Work Preliminary Results Concerns</summary></entry><entry><title type="html">Project Proposal</title><link href="http://localhost:4000/Project-Proposal/" rel="alternate" type="text/html" title="Project Proposal" /><published>2017-04-08T00:00:00-04:00</published><updated>2017-04-08T00:00:00-04:00</updated><id>http://localhost:4000/Project-Proposal</id><content type="html" xml:base="http://localhost:4000/Project-Proposal/">&lt;p&gt;This document is the proposal of our &lt;strong&gt;Distributed Question Answering System&lt;/strong&gt; project for the course &lt;strong&gt;15-418 Parallel Computer Architecture and Programming&lt;/strong&gt;, and we will cover the following topics in this proposal:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Title&lt;/li&gt;
+  &lt;li&gt;Team&lt;/li&gt;
+  &lt;li&gt;Summary&lt;/li&gt;
+  &lt;li&gt;Background&lt;/li&gt;
+  &lt;li&gt;The Challenge&lt;/li&gt;
+  &lt;li&gt;Resources&lt;/li&gt;
+  &lt;li&gt;Goals and Deliverables&lt;/li&gt;
+  &lt;li&gt;Platform Choice&lt;/li&gt;
+  &lt;li&gt;Schedule&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;title&quot;&gt;TITLE&lt;/h2&gt;
+&lt;p&gt;Ask Me Anything: Distributed Question Answering System with Freebase&lt;/p&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;team&quot;&gt;TEAM&lt;/h2&gt;
+&lt;p&gt;Ziyuan Gong (ziyuang), Hongyu Li (hongyul)&lt;/p&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;summary&quot;&gt;SUMMARY&lt;/h2&gt;
+&lt;p&gt;We will implement a question answering system trained by deep learning models (LSTM, CDSSM, etc.) that could answer any input questions from users. We will use parallel techniques to speedup the training and ranking phases of the system, and further improve the reponse speed by distributing the computation to multiple workers.&lt;/p&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;background&quot;&gt;BACKGROUND&lt;/h2&gt;
+&lt;h4 id=&quot;what-is-freebase&quot;&gt;What is Freebase?&lt;/h4&gt;
+&lt;p&gt;Freebase is a large collaborative knowledge base containing well structured data that allows machines to access them efficiently. Each entity can be considered as a graph node in the Freebase knowledge graph, and each outward edge together with the connecting entity or attribute represents a piece of fact or knowledge that could be used to answer different kinds of questions.&lt;/p&gt;
+
+&lt;h4 id=&quot;what-is-question-answering&quot;&gt;What is Question Answering?&lt;/h4&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;Question answering (QA) is a computer science discipline within the fields of information retrieval and natural language processing (NLP), which is concerned with building systems that automatically answer questions posed by humans in a natural language. — Wikipedia&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h4 id=&quot;what-is-a-typical-structure-for-question-answering-systems&quot;&gt;What is a typical structure for Question Answering systems?&lt;/h4&gt;
+&lt;p&gt;There are many different approaches to solve the Question Answering problem, such as NLP-based methods, Information Retrieval based methods or Machine Learning techniques, and the system structure may vary. However, our implementation will follow the paradigm below.&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Input: &lt;strong&gt;q&lt;/strong&gt;, a question in natural language&lt;/li&gt;
+  &lt;li&gt;Entity Recognition: identify the root entity &lt;strong&gt;e&lt;/strong&gt; in &lt;strong&gt;q&lt;/strong&gt;&lt;/li&gt;
+  &lt;li&gt;Fact Candidate Generation: generate the set of fact candidates &lt;strong&gt;F&lt;/strong&gt;, where for each &lt;strong&gt;f&lt;/strong&gt; in &lt;strong&gt;F&lt;/strong&gt;, &lt;strong&gt;f&lt;/strong&gt; is the Freebase triple that is extended from the root entity &lt;strong&gt;e&lt;/strong&gt;&lt;/li&gt;
+  &lt;li&gt;Ranking: rank all possible fact candidates, choose the best one to answer the question &lt;strong&gt;q&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;resources&quot;&gt;RESOURCES&lt;/h2&gt;
+&lt;p&gt;We will start from the &lt;strong&gt;aqqu&lt;/strong&gt; system provided in the study &lt;em&gt;More Accurate Question Answering on Freebase&lt;/em&gt; by Hannah Bast and Elmar Haussmann. However, the &lt;strong&gt;aqqu&lt;/strong&gt; system was only trained on the &lt;strong&gt;Free917&lt;/strong&gt; and the &lt;strong&gt;Webquestions&lt;/strong&gt; dataset, so that it does not satisfy our goal that the QA system could answer any input questions. Therefore, we will basically build our own QA system from scratch with similar accuracy but faster response speed.
+&lt;br /&gt;&lt;br /&gt;
+Papers as references:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://ad-publications.informatik.uni-freiburg.de/CIKM_freebase_qa_BH_2015.pdf&quot;&gt;&lt;em&gt;More Accurate Question Answering on Freebase&lt;/em&gt;&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.aclweb.org/anthology/P15-1128&quot;&gt;&lt;em&gt;Semantic Parsing via Staged Query Graph Generation: Question Answering with Knowledge Base&lt;/em&gt;&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://arxiv.org/pdf/1611.04125.pdf&quot;&gt;&lt;em&gt;Joint Representation Learning of Text and Knowledge for Knowledge Graph Completion&lt;/em&gt;&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://papers.nips.cc/paper/5846-end-to-end-memory-networks.pdf&quot;&gt;&lt;em&gt;End-to-end Memory Networks&lt;/em&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;the-challenge&quot;&gt;THE CHALLENGE&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;Data management: Given the sheer amount of Freebase raw data, it poses a challenge for our team to collect and construct a database to support effective information retrieval. Furthermore, both members of our team have limited prior experience on database, such that it requires extra time for our team to learn new stuff.&lt;/li&gt;
+  &lt;li&gt;Deep learning model: A significant part of our project relies on keras, a Deep Learning library for Python. Both the adaptation of the framework and the decision for our final deep learning algorithm require experimentation and comparison of various implementations.&lt;/li&gt;
+  &lt;li&gt;Acceleration: Again, the large amount of data in Freebase provides us with sufficient motivation to adapt parallel mechanism we learnt in class to accelerate the whole process. However, given the hop-by-hop network structure, it poses a challenge for us to find the correct response in a short period of time.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;goals-and-deliverables&quot;&gt;GOALS AND DELIVERABLES&lt;/h2&gt;
+&lt;h4 id=&quot;plan-to-achieve&quot;&gt;PLAN TO ACHIEVE&lt;/h4&gt;
+&lt;p&gt;One must-achieve for this project is to build a robust Question Answering system. Here is a list of functionalities and requirements that we want our system to achieve:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Robust, bug-free&lt;/li&gt;
+  &lt;li&gt;Will give a list of possible answers for any input questions&lt;/li&gt;
+  &lt;li&gt;Accuracy: correct answer in the top-5 list for 80% of the questions&lt;/li&gt;
+  &lt;li&gt;Speed: output an answer for any question within a second (the &lt;strong&gt;aqqu&lt;/strong&gt; system answers a question for about 5 seconds in average)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;hope-to-achieve&quot;&gt;HOPE TO ACHIEVE&lt;/h4&gt;
+&lt;p&gt;If the project goes really well, we want to achieve the following goals:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Build a web service to receive user requests&lt;/li&gt;
+  &lt;li&gt;Build a Question Answering Visualizer that could display the process of finding the answers for the question through Freebase&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;demo&quot;&gt;DEMO&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;We aim to give an interactive demo during our final presentation. It would be great if we can ask some people to come up with some questions and input them to our Question Answering system, which would make the presentation much more engaging.&lt;/li&gt;
+  &lt;li&gt;For evaluation purposes, we will include the speedup graph for multiple approaches in our final report, and also the evaluation results on the &lt;strong&gt;Free917&lt;/strong&gt; and &lt;strong&gt;Webquestions&lt;/strong&gt; dataset to see whether we have achieved the accuracy objective.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;platform-choice&quot;&gt;PLATFORM CHOICE&lt;/h2&gt;
+
+&lt;p&gt;The system will be implemented in Python, and we will use &lt;strong&gt;Keras&lt;/strong&gt; to train the LSTM (Long-short-term-memory) and CDSSM (Covolutional Deep Structured Semantic Model) models.&lt;/p&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;schedule&quot;&gt;SCHEDULE&lt;/h2&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Date&lt;/th&gt;
+      &lt;th&gt;Objectives&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2017.04.10&lt;/td&gt;
+      &lt;td&gt;Pre-process Freebase data, split and load into multiple databases. Finalize the Question Answering system structure: entity recognition, query candidate expansion, ranking …&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2017.04.17&lt;/td&gt;
+      &lt;td&gt;Train the Bi-diretional LSTM model on the Webquestions dataset in order to compute sentence similarity. Continue working on building the Question Answering system.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2017.04.24&lt;/td&gt;
+      &lt;td&gt;Test current system with example question set. Try different parallel techniques to speedup.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2017.05.01&lt;/td&gt;
+      &lt;td&gt;Launch the Question Answering system on AWS. Try to build the web service to receive Question-Answering request.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2017.05.08&lt;/td&gt;
+      &lt;td&gt;Finalize report and presentation. Continue working on web service and Question-Answering visualizer.&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">This document is the proposal of our Distributed Question Answering System project for the course 15-418 Parallel Computer Architecture and Programming, and we will cover the following topics in this proposal: Title Team Summary Background The Challenge Resources Goals and Deliverables Platform Choice Schedule</summary></entry></feed>

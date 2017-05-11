@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+  <head>
+    <title>Final Writeup – Ask Me Anything – Distributed Question Answering System with Freebase</title>
+
+        <meta charset="utf-8" />
+    <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0'>
+
+    
+    <meta name="description" content="This document is a final report of our Distributed Question Answering System project for the course 15-418 Parallel Computer Architecture and Programming, 
+and we will cover the following topics in this report:
+
+  Summary
+  Background
+  Approach
+  Results
+
+
+" />
+    <meta property="og:description" content="This document is a final report of our Distributed Question Answering System project for the course 15-418 Parallel Computer Architecture and Programming, 
+and we will cover the following topics in this report:
+
+  Summary
+  Background
+  Approach
+  Results
+
+
+" />
+    
+    <meta name="author" content="Ask Me Anything" />
+
+    
+    <meta property="og:title" content="Final Writeup" />
+    <meta property="twitter:title" content="Final Writeup" />
+    
+
+    <!--[if lt IE 9]>
+      <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <link rel="stylesheet" type="text/css" href="/style.css" />
+    <link rel="alternate" type="application/rss+xml" title="Ask Me Anything - Distributed Question Answering System with Freebase" href="/feed.xml" />
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <script src="js/libs/modernizr-2.0.6.min.js"></script>
+
+    <!-- Created with Jekyll Now - http://github.com/barryclark/jekyll-now -->
+  </head>
+
+  <body>
+    <div class="wrapper-masthead">
+      <div class="container">
+        <header class="masthead clearfix">
+          <a href="/" class="site-avatar"><img src="https://raw.githubusercontent.com/barryclark/jekyll-now/master/images/jekyll-logo.png" /></a>
+
+          <div class="site-info">
+            <h1 class="site-name"><a href="/">Ask Me Anything</a></h1>
+            <p class="site-description">Distributed Question Answering System with Freebase</p>
+          </div>
+
+          <nav>
+            <a href="/">Blog</a>
+            <a href="/about">About</a>
+          </nav>
+        </header>
+      </div>
+    </div>
+
+    <div id="main" role="main" class="container">
+      <article class="post">
+  <h1>Final Writeup</h1>
+
+  <div class="entry">
+    <p>This document is a final report of our <strong>Distributed Question Answering System</strong> project for the course <strong>15-418 Parallel Computer Architecture and Programming</strong>, 
+and we will cover the following topics in this report:</p>
+<ul>
+  <li>Summary</li>
+  <li>Background</li>
+  <li>Approach</li>
+  <li>Results</li>
+</ul>
+
+<p><br /><br /></p>
+
+<h2 id="summary">SUMMARY</h2>
+<p><br /><br /></p>
+
+<h2 id="background">BACKGROUND</h2>
+<p><br /><br /></p>
+
+<h2 id="approach">APPROACH</h2>
+<h4 id="fact-candidate-generation">Fact Candidate Generation</h4>
+<p>We used the Entity Linker in the Aqqu system <sup id="fnref:fn1"><a href="#fn:fn1" class="footnote">1</a></sup>. During the entity linking process, each subsequence <script type="math/tex">s</script> of the query text is matched with all Freebase entities that have name or alias that equal to <script type="math/tex">s</script>. These Freebase entities are the root entities recognized from the question, and the popolarity score computed with the CrossWikis dataset <sup id="fnref:fn8"><a href="#fn:fn8" class="footnote">2</a></sup> is added to the feature vector in the purpose of measuring entity linking accuracy. The CrossWikis dataset was created by web crawling hyperlinks of Wikipedia entities, and it could be used to measure the empirical distribution over Wikipedia entities. For entities that are not covered by CrossWikis, we only consider the exact name match.</p>
+
+<p>For example, the input question “who inspired obama?” will produce possible subsequences such as <script type="math/tex">\Big\{ \text{"who inspired"}, \text{"inspired obama"}, \text{"obama"}, ...\Big\}</script>, in which the subsequence “obama” match the alias of the entity “Barack Obama” with popularity score of <script type="math/tex">0.9029</script>.</p>
+
+<p>After identifying the root entities of the question, we can generate the list of fact candidates by extending the root entities with all possible outward edges (relationship) in Freebase. Some example fact candidates generated from the root entity “Barack Obama” are illustrated in the following figure.</p>
+
+<p><img src="/images/.png" alt="_config.yml" /></p>
+
+<h4 id="relation-matching-with-bi-directional-lstm">Relation Matching with Bi-directional LSTM</h4>
+
+<h4 id="distributed-question-relation-similarity-computation">Distributed Question-Relation Similarity Computation</h4>
+<p>Given the large amount of triplets to be searched, it provided our group sufficient motivation to distribute the computation to multiple nodes across the network. Each query request can be packaged and sent to a pool of workers, such that data-parallelism can be leveraged upon. In order to achieve this goal, we eventually decided the following structure:</p>
+
+<ul>
+  <li>
+    <p>We adapted a three-level pipelined structure. The ventilator is the producer of the queries and is responsible for packaging the data and sending jobs to workers. The workers are the intermediate consumers of the pipeline and are accountable of the most CPU intensive work. Instead of sending the result back to the producer, the workers will send the result downstream to a common result collector to avoid excessive communication traffic on the producer side. It also reduces contention for physical resources inside the ventilator. If further iterations are required, the message could be sent back from result manager to ventilator in a message batching manner, which will also be illustrated later.</p>
+  </li>
+  <li>
+    <p>In order to distribute the data efficiently, we adapted asynchronous socket programming that could be deployed to multiple machines with ease. Given the few dependencies on the queries, as well as the flowing query processing pattern, it makes an asynchronous queue structure preferable. Additionally we used the ventilator to dynamically monitor the queue size of each worker to maintain load-balancing. Requests on socket are scheduled in a round-robin manner out of the concerns of simplicity and unpredictiveness of exact location of the message (ventilator’s buffer, wire, worker’s buffer, to name a few). Neither shared memory nor pipe structure was considered in this scenario, as we are distributing the requests across the network.</p>
+  </li>
+  <li>
+    <p>Lastly distributing the data has the additional potential benefit of allowing queries too large to fit into one CPU’s memory to be used, which could be useful when larger knowledge base is incorporated into our application.</p>
+  </li>
+</ul>
+
+<h4 id="learning-to-rank">Learning-to-Rank</h4>
+
+<p><br /><br /></p>
+
+<h2 id="results">RESULTS</h2>
+<p><br /><br /></p>
+
+<h2 id="references">REFERENCES</h2>
+<p><br /><br /></p>
+
+<h2 id="work-distribution">WORK DISTRIBUTION</h2>
+<p>Equal work was performed by both project members.
+<br /><br /></p>
+
+<div class="footnotes">
+  <ol>
+    <li id="fn:fn1">
+      <p>H. Bast and E. Haussmann. More accurate question answering on freebase. In Proceedings of the 24th ACM International on Conference on Information and Knowledge Management, CIKM ’15, pages 1431–1440, New York, NY, USA, 2015. ACM.&nbsp;<a href="#fnref:fn1" class="reversefootnote">&#8617;</a></p>
+    </li>
+    <li id="fn:fn8">
+      <p>V. I. Spitkovsky and A. X. Chang. A cross-lingual dictionary for english wikipedia concepts. In N. C. C. Chair), K. Choukri, T. Declerck, M. U. Doan, B. Maegaard, J. Mariani, A. Moreno, J. Odijk, and S. Piperidis, editors, Proceedings of the Eight International Conference on Language Resources and Evaluation (LREC’12), Istanbul, Turkey, may 2012. European Language Resources Association (ELRA).&nbsp;<a href="#fnref:fn8" class="reversefootnote">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+  </div>
+
+  <div class="date">
+    Written on May 10, 2017
+  </div>
+
+  
+</article>
+
+    </div>
+
+    <div class="wrapper-footer">
+      <div class="container">
+        <footer class="footer">
+          
+
+
+
+<a href="https://github.com/xiaozhuyfk/parallel"><i class="svg-icon github"></i></a>
+
+
+
+
+
+
+
+
+        </footer>
+      </div>
+    </div>
+
+    
+
+
+
+    <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script> -->
+    <script>window.jQuery || document.write('<script src="js/libs/jquery-1.7.2.min.js"><\/script>')</script>
+
+
+    <script defer src="js/plugins.js"></script>
+    <script defer src="js/script.js"></script>
+    <script src="js/libs/coffee-script.js"></script>
+    <script src="js/libs/d3.v2.js"></script>
+    <script src="js/Tooltip.js"></script>
+    <script type="text/coffeescript" src="coffee/network.coffee"></script>
+
+    <script> // Change UA-XXXXX-X to be your site's ID
+    window._gaq = [['_setAccount', 'UAXXXXXXXX1'], ['_trackPageview'], ['_trackPageLoadTime']];
+    Modernizr.load({
+        load: ('https:' == location.protocol ? '//ssl' : '//www') + '.google-analytics.com/ga.js'
+    });
+    </script>
+
+
+    <!--[if lt IE 7 ]>
+    <script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
+    <script>window.attachEvent('onload', function () {
+        CFInstall.check({mode: 'overlay'})
+    })</script>
+    <![endif]-->
+
+  </body>
+</html>

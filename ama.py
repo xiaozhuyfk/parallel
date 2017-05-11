@@ -77,7 +77,7 @@ def main():
     modules.init_from_config(args)
 
     if args.which == 'test':
-        train(args.dataset)
+        test(args.dataset)
     elif args.which == 'answer':
         answer(args.question)
     elif args.which == 'play':

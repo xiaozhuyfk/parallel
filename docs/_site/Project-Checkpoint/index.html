@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+  <head>
+    <title>Project Checkpoint – Ask Me Anything – Distributed Question Answering System with Freebase</title>
+
+        <meta charset="utf-8" />
+    <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0'>
+
+    
+    <meta name="description" content="This document is a checkpoint review of our Distributed Question Answering System project for the course 15-418 Parallel Computer Architecture and Programming, and we will cover the following topics in this report:
+
+  Current Status and Future Schedule
+  Summary of Work
+  Preliminary Results
+  Concerns
+
+
+" />
+    <meta property="og:description" content="This document is a checkpoint review of our Distributed Question Answering System project for the course 15-418 Parallel Computer Architecture and Programming, and we will cover the following topics in this report:
+
+  Current Status and Future Schedule
+  Summary of Work
+  Preliminary Results
+  Concerns
+
+
+" />
+    
+    <meta name="author" content="Ask Me Anything" />
+
+    
+    <meta property="og:title" content="Project Checkpoint" />
+    <meta property="twitter:title" content="Project Checkpoint" />
+    
+
+    <!--[if lt IE 9]>
+      <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <link rel="stylesheet" type="text/css" href="/style.css" />
+    <link rel="alternate" type="application/rss+xml" title="Ask Me Anything - Distributed Question Answering System with Freebase" href="/feed.xml" />
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <script src="js/libs/modernizr-2.0.6.min.js"></script>
+
+    <!-- Created with Jekyll Now - http://github.com/barryclark/jekyll-now -->
+  </head>
+
+  <body>
+    <div class="wrapper-masthead">
+      <div class="container">
+        <header class="masthead clearfix">
+          <a href="/" class="site-avatar"><img src="https://raw.githubusercontent.com/barryclark/jekyll-now/master/images/jekyll-logo.png" /></a>
+
+          <div class="site-info">
+            <h1 class="site-name"><a href="/">Ask Me Anything</a></h1>
+            <p class="site-description">Distributed Question Answering System with Freebase</p>
+          </div>
+
+          <nav>
+            <a href="/">Blog</a>
+            <a href="/about">About</a>
+          </nav>
+        </header>
+      </div>
+    </div>
+
+    <div id="main" role="main" class="container">
+      <article class="post">
+  <h1>Project Checkpoint</h1>
+
+  <div class="entry">
+    <p>This document is a checkpoint review of our <strong>Distributed Question Answering System</strong> project for the course <strong>15-418 Parallel Computer Architecture and Programming</strong>, and we will cover the following topics in this report:</p>
+<ul>
+  <li>Current Status and Future Schedule</li>
+  <li>Summary of Work</li>
+  <li>Preliminary Results</li>
+  <li>Concerns</li>
+</ul>
+
+<p><br /><br /></p>
+
+<h2 id="current-status--future-schedule">CURRENT STATUS &amp; FUTURE SCHEDULE</h2>
+
+<p>The following table shows the current status of our project, and the schedule for the future two weeks segmented into half-week periods.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Objectives</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2017.04.10</td>
+      <td>Pre-process Freebase data, split and load into multiple databases. Finalize the Question Answering system structure: entity recognition, query candidate expansion, ranking …</td>
+      <td>Done</td>
+    </tr>
+    <tr>
+      <td>2017.04.17</td>
+      <td>Train the Bi-diretional LSTM model on the Webquestions dataset in order to compute sentence similarity. Continue working on building the Question Answering system.</td>
+      <td>Done</td>
+    </tr>
+    <tr>
+      <td>2017.04.24</td>
+      <td>Start working on AMA web service. Distribute computation of each fact candidate to multiple worker nodes.</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>Start working on implementing parallel SVM.</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>2017.05.01</td>
+      <td>Finalize implementation of the parallel version of SVM.</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>Combine all components and set up web service.</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>2017.05.08</td>
+      <td>Finalize report and presentation. Start working on web service and Question-Answering visualizer if we have time.</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p><br /><br /></p>
+
+<h2 id="summary-of-work">Summary of Work</h2>
+
+<p>For the last two weeks, we’ve been working on building the entire Question-Answering system from scratch with the following components:</p>
+<ul>
+  <li>Entity Linker with <a href="https://tagme.d4science.org/tagme/"><em>TagMe</em></a></li>
+  <li>Facts Candidates Extraction by sending SPARQL queries to Virtuoso database</li>
+  <li>Compute similarity scores with Bi-directional LSTM with pre-trained Embedding (trained pairwisely)</li>
+  <li>Feature Engineering</li>
+  <li>Rank answer candidates with <a href="https://www.cs.cornell.edu/People/tj/svm_light/svm_rank.html"><em>SVM-rank</em></a></li>
+</ul>
+
+<h4 id="deliverables-and-goals">Deliverables and Goals</h4>
+<p>I think we have achieved the expected progress according to the schedule posted in the proposal, and we believe we will be able to produce all the deliverables stated in the proposal. Here is a list of goals that we hope to achieve for the final Parallelism competition,</p>
+<ul>
+  <li>Robust Question-Answering system with quick response time (within seconds)</li>
+  <li>Implement parallel SVM for the ranking phase (new goal)</li>
+  <li>Build web server to handle question answering requests elastically (nice to have)</li>
+  <li>Build question answering visualizer to display the answering process (nice to have, hopefully on IOS)</li>
+</ul>
+
+<h4 id="plan-to-show">Plan to Show</h4>
+<p>We aim to give an interactive demo at the Parallelism competition.</p>
+
+<p><br /><br /></p>
+
+<h2 id="preliminary-results">Preliminary Results</h2>
+
+<p>We didn’t have any evaluation results yet, since we were still working on parallelizing our Question-Answering system and the SVM ranker. However, we have this short video demo showing what our QA system is capable of doing for now.</p>
+
+<iframe width="800" height="450" src="https://www.youtube.com/embed/wOyso7gFJfU" frameborder="0" allowfullscreen=""></iframe>
+
+<p><br /><br /></p>
+
+<h2 id="concerns">Concerns</h2>
+
+<ul>
+  <li>Schedule: While we have managed to follow the original schedule, we are still a bit behind the project handout due to sequential code implementation, debugging and model training. While we have a working program, we have not fully delved into the parallel implementation, which could bear the weight of a project on its own.</li>
+  <li>Managing workload: Furthermore, the communication-to-computation overhead when dealing with workload distribution to multiple workers is another area that requires our consideration. Both the number of workers spawned and the appropriate amount of work assigned to each worker require extra time to experiment.</li>
+  <li>Choice of parallel method: Given the limited remaining time, we are a bit worried about our choice of implementation. There are a bunch of papers that outlines different methods to parallel SVM (e.g. row-based PSVM by Edward Y. Chang et al that both reduces memory requirement in a distributed setting and improves computation time, Parallel Sequential Minimal Optimization(PSMO) illustrated by L. J. Cao et al, that is developed using MPI(We are glad to find that there is MPI support for Python), among others). If time is not allowed, we have to decide our implementation based on theoretical knowledge, rather than implementing all of them and comparing the results.</li>
+  <li>Web service: Recently we also started exploring AWS in order to host our service and encountered a little trouble, but we are confident that we could get rid of this problem soon enough.</li>
+</ul>
+
+<p><br /><br /></p>
+
+  </div>
+
+  <div class="date">
+    Written on April 23, 2017
+  </div>
+
+  
+</article>
+
+    </div>
+
+    <div class="wrapper-footer">
+      <div class="container">
+        <footer class="footer">
+          
+
+
+
+<a href="https://github.com/xiaozhuyfk/parallel"><i class="svg-icon github"></i></a>
+
+
+
+
+
+
+
+
+        </footer>
+      </div>
+    </div>
+
+    
+
+
+
+    <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script> -->
+    <script>window.jQuery || document.write('<script src="js/libs/jquery-1.7.2.min.js"><\/script>')</script>
+
+
+    <script defer src="js/plugins.js"></script>
+    <script defer src="js/script.js"></script>
+    <script src="js/libs/coffee-script.js"></script>
+    <script src="js/libs/d3.v2.js"></script>
+    <script src="js/Tooltip.js"></script>
+    <script type="text/coffeescript" src="coffee/network.coffee"></script>
+
+    <script> // Change UA-XXXXX-X to be your site's ID
+    window._gaq = [['_setAccount', 'UAXXXXXXXX1'], ['_trackPageview'], ['_trackPageLoadTime']];
+    Modernizr.load({
+        load: ('https:' == location.protocol ? '//ssl' : '//www') + '.google-analytics.com/ga.js'
+    });
+    </script>
+
+
+    <!--[if lt IE 7 ]>
+    <script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
+    <script>window.attachEvent('onload', function () {
+        CFInstall.check({mode: 'overlay'})
+    })</script>
+    <![endif]-->
+
+  </body>
+</html>

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+  <head>
+    <title>Project Proposal – Ask Me Anything – Distributed Question Answering System with Freebase</title>
+
+        <meta charset="utf-8" />
+    <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0'>
+
+    
+    <meta name="description" content="This document is the proposal of our Distributed Question Answering System project for the course 15-418 Parallel Computer Architecture and Programming, and we will cover the following topics in this proposal:
+
+  Title
+  Team
+  Summary
+  Background
+  The Challenge
+  Resources
+  Goals and Deliverables
+  Platform Choice
+  Schedule
+
+
+" />
+    <meta property="og:description" content="This document is the proposal of our Distributed Question Answering System project for the course 15-418 Parallel Computer Architecture and Programming, and we will cover the following topics in this proposal:
+
+  Title
+  Team
+  Summary
+  Background
+  The Challenge
+  Resources
+  Goals and Deliverables
+  Platform Choice
+  Schedule
+
+
+" />
+    
+    <meta name="author" content="Ask Me Anything" />
+
+    
+    <meta property="og:title" content="Project Proposal" />
+    <meta property="twitter:title" content="Project Proposal" />
+    
+
+    <!--[if lt IE 9]>
+      <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <link rel="stylesheet" type="text/css" href="/style.css" />
+    <link rel="alternate" type="application/rss+xml" title="Ask Me Anything - Distributed Question Answering System with Freebase" href="/feed.xml" />
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <script src="js/libs/modernizr-2.0.6.min.js"></script>
+
+    <!-- Created with Jekyll Now - http://github.com/barryclark/jekyll-now -->
+  </head>
+
+  <body>
+    <div class="wrapper-masthead">
+      <div class="container">
+        <header class="masthead clearfix">
+          <a href="/" class="site-avatar"><img src="https://raw.githubusercontent.com/barryclark/jekyll-now/master/images/jekyll-logo.png" /></a>
+
+          <div class="site-info">
+            <h1 class="site-name"><a href="/">Ask Me Anything</a></h1>
+            <p class="site-description">Distributed Question Answering System with Freebase</p>
+          </div>
+
+          <nav>
+            <a href="/">Blog</a>
+            <a href="/about">About</a>
+          </nav>
+        </header>
+      </div>
+    </div>
+
+    <div id="main" role="main" class="container">
+      <article class="post">
+  <h1>Project Proposal</h1>
+
+  <div class="entry">
+    <p>This document is the proposal of our <strong>Distributed Question Answering System</strong> project for the course <strong>15-418 Parallel Computer Architecture and Programming</strong>, and we will cover the following topics in this proposal:</p>
+<ul>
+  <li>Title</li>
+  <li>Team</li>
+  <li>Summary</li>
+  <li>Background</li>
+  <li>The Challenge</li>
+  <li>Resources</li>
+  <li>Goals and Deliverables</li>
+  <li>Platform Choice</li>
+  <li>Schedule</li>
+</ul>
+
+<p><br /><br /></p>
+
+<h2 id="title">TITLE</h2>
+<p>Ask Me Anything: Distributed Question Answering System with Freebase</p>
+
+<p><br /><br /></p>
+
+<h2 id="team">TEAM</h2>
+<p>Ziyuan Gong (ziyuang), Hongyu Li (hongyul)</p>
+
+<p><br /><br /></p>
+
+<h2 id="summary">SUMMARY</h2>
+<p>We will implement a question answering system trained by deep learning models (LSTM, CDSSM, etc.) that could answer any input questions from users. We will use parallel techniques to speedup the training and ranking phases of the system, and further improve the reponse speed by distributing the computation to multiple workers.</p>
+
+<p><br /><br /></p>
+
+<h2 id="background">BACKGROUND</h2>
+<h4 id="what-is-freebase">What is Freebase?</h4>
+<p>Freebase is a large collaborative knowledge base containing well structured data that allows machines to access them efficiently. Each entity can be considered as a graph node in the Freebase knowledge graph, and each outward edge together with the connecting entity or attribute represents a piece of fact or knowledge that could be used to answer different kinds of questions.</p>
+
+<h4 id="what-is-question-answering">What is Question Answering?</h4>
+<blockquote>
+  <p>Question answering (QA) is a computer science discipline within the fields of information retrieval and natural language processing (NLP), which is concerned with building systems that automatically answer questions posed by humans in a natural language. — Wikipedia</p>
+</blockquote>
+
+<h4 id="what-is-a-typical-structure-for-question-answering-systems">What is a typical structure for Question Answering systems?</h4>
+<p>There are many different approaches to solve the Question Answering problem, such as NLP-based methods, Information Retrieval based methods or Machine Learning techniques, and the system structure may vary. However, our implementation will follow the paradigm below.</p>
+<ul>
+  <li>Input: <strong>q</strong>, a question in natural language</li>
+  <li>Entity Recognition: identify the root entity <strong>e</strong> in <strong>q</strong></li>
+  <li>Fact Candidate Generation: generate the set of fact candidates <strong>F</strong>, where for each <strong>f</strong> in <strong>F</strong>, <strong>f</strong> is the Freebase triple that is extended from the root entity <strong>e</strong></li>
+  <li>Ranking: rank all possible fact candidates, choose the best one to answer the question <strong>q</strong></li>
+</ul>
+
+<p><br /><br /></p>
+
+<h2 id="resources">RESOURCES</h2>
+<p>We will start from the <strong>aqqu</strong> system provided in the study <em>More Accurate Question Answering on Freebase</em> by Hannah Bast and Elmar Haussmann. However, the <strong>aqqu</strong> system was only trained on the <strong>Free917</strong> and the <strong>Webquestions</strong> dataset, so that it does not satisfy our goal that the QA system could answer any input questions. Therefore, we will basically build our own QA system from scratch with similar accuracy but faster response speed.
+<br /><br />
+Papers as references:</p>
+<ul>
+  <li><a href="http://ad-publications.informatik.uni-freiburg.de/CIKM_freebase_qa_BH_2015.pdf"><em>More Accurate Question Answering on Freebase</em></a></li>
+  <li><a href="http://www.aclweb.org/anthology/P15-1128"><em>Semantic Parsing via Staged Query Graph Generation: Question Answering with Knowledge Base</em></a></li>
+  <li><a href="https://arxiv.org/pdf/1611.04125.pdf"><em>Joint Representation Learning of Text and Knowledge for Knowledge Graph Completion</em></a></li>
+  <li><a href="https://papers.nips.cc/paper/5846-end-to-end-memory-networks.pdf"><em>End-to-end Memory Networks</em></a></li>
+</ul>
+
+<p><br /><br /></p>
+
+<h2 id="the-challenge">THE CHALLENGE</h2>
+<ul>
+  <li>Data management: Given the sheer amount of Freebase raw data, it poses a challenge for our team to collect and construct a database to support effective information retrieval. Furthermore, both members of our team have limited prior experience on database, such that it requires extra time for our team to learn new stuff.</li>
+  <li>Deep learning model: A significant part of our project relies on keras, a Deep Learning library for Python. Both the adaptation of the framework and the decision for our final deep learning algorithm require experimentation and comparison of various implementations.</li>
+  <li>Acceleration: Again, the large amount of data in Freebase provides us with sufficient motivation to adapt parallel mechanism we learnt in class to accelerate the whole process. However, given the hop-by-hop network structure, it poses a challenge for us to find the correct response in a short period of time.</li>
+</ul>
+
+<p><br /><br /></p>
+
+<h2 id="goals-and-deliverables">GOALS AND DELIVERABLES</h2>
+<h4 id="plan-to-achieve">PLAN TO ACHIEVE</h4>
+<p>One must-achieve for this project is to build a robust Question Answering system. Here is a list of functionalities and requirements that we want our system to achieve:</p>
+<ul>
+  <li>Robust, bug-free</li>
+  <li>Will give a list of possible answers for any input questions</li>
+  <li>Accuracy: correct answer in the top-5 list for 80% of the questions</li>
+  <li>Speed: output an answer for any question within a second (the <strong>aqqu</strong> system answers a question for about 5 seconds in average)</li>
+</ul>
+
+<h4 id="hope-to-achieve">HOPE TO ACHIEVE</h4>
+<p>If the project goes really well, we want to achieve the following goals:</p>
+<ul>
+  <li>Build a web service to receive user requests</li>
+  <li>Build a Question Answering Visualizer that could display the process of finding the answers for the question through Freebase</li>
+</ul>
+
+<h4 id="demo">DEMO</h4>
+<ul>
+  <li>We aim to give an interactive demo during our final presentation. It would be great if we can ask some people to come up with some questions and input them to our Question Answering system, which would make the presentation much more engaging.</li>
+  <li>For evaluation purposes, we will include the speedup graph for multiple approaches in our final report, and also the evaluation results on the <strong>Free917</strong> and <strong>Webquestions</strong> dataset to see whether we have achieved the accuracy objective.</li>
+</ul>
+
+<p><br /><br /></p>
+
+<h2 id="platform-choice">PLATFORM CHOICE</h2>
+
+<p>The system will be implemented in Python, and we will use <strong>Keras</strong> to train the LSTM (Long-short-term-memory) and CDSSM (Covolutional Deep Structured Semantic Model) models.</p>
+
+<p><br /><br /></p>
+
+<h2 id="schedule">SCHEDULE</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Objectives</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2017.04.10</td>
+      <td>Pre-process Freebase data, split and load into multiple databases. Finalize the Question Answering system structure: entity recognition, query candidate expansion, ranking …</td>
+    </tr>
+    <tr>
+      <td>2017.04.17</td>
+      <td>Train the Bi-diretional LSTM model on the Webquestions dataset in order to compute sentence similarity. Continue working on building the Question Answering system.</td>
+    </tr>
+    <tr>
+      <td>2017.04.24</td>
+      <td>Test current system with example question set. Try different parallel techniques to speedup.</td>
+    </tr>
+    <tr>
+      <td>2017.05.01</td>
+      <td>Launch the Question Answering system on AWS. Try to build the web service to receive Question-Answering request.</td>
+    </tr>
+    <tr>
+      <td>2017.05.08</td>
+      <td>Finalize report and presentation. Continue working on web service and Question-Answering visualizer.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><br /><br /></p>
+
+  </div>
+
+  <div class="date">
+    Written on April  8, 2017
+  </div>
+
+  
+</article>
+
+    </div>
+
+    <div class="wrapper-footer">
+      <div class="container">
+        <footer class="footer">
+          
+
+
+
+<a href="https://github.com/xiaozhuyfk/parallel"><i class="svg-icon github"></i></a>
+
+
+
+
+
+
+
+
+        </footer>
+      </div>
+    </div>
+
+    
+
+
+
+    <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script> -->
+    <script>window.jQuery || document.write('<script src="js/libs/jquery-1.7.2.min.js"><\/script>')</script>
+
+
+    <script defer src="js/plugins.js"></script>
+    <script defer src="js/script.js"></script>
+    <script src="js/libs/coffee-script.js"></script>
+    <script src="js/libs/d3.v2.js"></script>
+    <script src="js/Tooltip.js"></script>
+    <script type="text/coffeescript" src="coffee/network.coffee"></script>
+
+    <script> // Change UA-XXXXX-X to be your site's ID
+    window._gaq = [['_setAccount', 'UAXXXXXXXX1'], ['_trackPageview'], ['_trackPageLoadTime']];
+    Modernizr.load({
+        load: ('https:' == location.protocol ? '//ssl' : '//www') + '.google-analytics.com/ga.js'
+    });
+    </script>
+
+
+    <!--[if lt IE 7 ]>
+    <script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
+    <script>window.attachEvent('onload', function () {
+        CFInstall.check({mode: 'overlay'})
+    })</script>
+    <![endif]-->
+
+  </body>
+</html>
