@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-05-11T16:22:19-04:00</updated><id>http://localhost:4000/</id><title type="html">Ask Me Anything</title><subtitle>Distributed Question Answering System with Freebase</subtitle><entry><title type="html">Final Writeup</title><link href="http://localhost:4000/Final-Writeup/" rel="alternate" type="text/html" title="Final Writeup" /><published>2017-05-10T00:00:00-04:00</published><updated>2017-05-10T00:00:00-04:00</updated><id>http://localhost:4000/Final-Writeup</id><content type="html" xml:base="http://localhost:4000/Final-Writeup/">&lt;p&gt;This document is a final report of our &lt;strong&gt;Distributed Question Answering System&lt;/strong&gt; project for the course &lt;strong&gt;15-418 Parallel Computer Architecture and Programming&lt;/strong&gt;, 
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-05-11T17:53:49-04:00</updated><id>http://localhost:4000/</id><title type="html">Ask Me Anything</title><subtitle>Distributed Question Answering System with Freebase</subtitle><entry><title type="html">Final Writeup</title><link href="http://localhost:4000/Final-Writeup/" rel="alternate" type="text/html" title="Final Writeup" /><published>2017-05-10T00:00:00-04:00</published><updated>2017-05-10T00:00:00-04:00</updated><id>http://localhost:4000/Final-Writeup</id><content type="html" xml:base="http://localhost:4000/Final-Writeup/">&lt;p&gt;This document is a final report of our &lt;strong&gt;Distributed Question Answering System&lt;/strong&gt; project for the course &lt;strong&gt;15-418 Parallel Computer Architecture and Programming&lt;/strong&gt;, 
 and we will cover the following topics in this report:&lt;/p&gt;
 &lt;ul&gt;
   &lt;li&gt;Summary&lt;/li&gt;
@@ -10,22 +10,51 @@ and we will cover the following topics in this report:&lt;/p&gt;
 &lt;p&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;summary&quot;&gt;SUMMARY&lt;/h2&gt;
-&lt;p&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p&gt;In this project, we built an end-to-end Question Answering system based on Knoledge base (Freebase). 
+&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;background&quot;&gt;BACKGROUND&lt;/h2&gt;
 &lt;p&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;approach&quot;&gt;APPROACH&lt;/h2&gt;
 &lt;h4 id=&quot;fact-candidate-generation&quot;&gt;Fact Candidate Generation&lt;/h4&gt;
-&lt;p&gt;We used the Entity Linker in the Aqqu system &lt;sup id=&quot;fnref:fn1&quot;&gt;&lt;a href=&quot;#fn:fn1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;. During the entity linking process, each subsequence &lt;script type=&quot;math/tex&quot;&gt;s&lt;/script&gt; of the query text is matched with all Freebase entities that have name or alias that equal to &lt;script type=&quot;math/tex&quot;&gt;s&lt;/script&gt;. These Freebase entities are the root entities recognized from the question, and the popolarity score computed with the CrossWikis dataset &lt;sup id=&quot;fnref:fn8&quot;&gt;&lt;a href=&quot;#fn:fn8&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt; is added to the feature vector in the purpose of measuring entity linking accuracy. The CrossWikis dataset was created by web crawling hyperlinks of Wikipedia entities, and it could be used to measure the empirical distribution over Wikipedia entities. For entities that are not covered by CrossWikis, we only consider the exact name match.&lt;/p&gt;
+&lt;p&gt;We used the Entity Linker in the Aqqu system [&lt;sup id=&quot;fnref:fn1&quot;&gt;&lt;a href=&quot;#fn:fn1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;]. During the entity linking process, each subsequence &lt;script type=&quot;math/tex&quot;&gt;s&lt;/script&gt; of the query text is matched with all Freebase entities that have name or alias that equal to &lt;script type=&quot;math/tex&quot;&gt;s&lt;/script&gt;. These Freebase entities are the root entities recognized from the question, and the popolarity score computed with the CrossWikis dataset [&lt;sup id=&quot;fnref:fn8&quot;&gt;&lt;a href=&quot;#fn:fn8&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;] is added to the feature vector in the purpose of measuring entity linking accuracy. The CrossWikis dataset was created by web crawling hyperlinks of Wikipedia entities, and it could be used to measure the empirical distribution over Wikipedia entities. For entities that are not covered by CrossWikis, we only consider the exact name match.&lt;/p&gt;
 
-&lt;p&gt;For example, the input question “who inspired obama?” will produce possible subsequences such as &lt;script type=&quot;math/tex&quot;&gt;\Big\{ \text{&quot;who inspired&quot;}, \text{&quot;inspired obama&quot;}, \text{&quot;obama&quot;}, ...\Big\}&lt;/script&gt;, in which the subsequence “obama” match the alias of the entity “Barack Obama” with popularity score of &lt;script type=&quot;math/tex&quot;&gt;0.9029&lt;/script&gt;.&lt;/p&gt;
+&lt;p&gt;For example, the input question “who inspired obama?” will produce possible subsequences such as&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\Big\{ \text{&quot;who inspired&quot;}, \text{&quot;inspired obama&quot;}, \text{&quot;obama&quot;}, ...\Big\}&lt;/script&gt;
+
+&lt;p&gt;in which the subsequence “obama” match the alias of the entity “Barack Obama” with popularity score of &lt;script type=&quot;math/tex&quot;&gt;0.9029&lt;/script&gt;.&lt;/p&gt;
 
 &lt;p&gt;After identifying the root entities of the question, we can generate the list of fact candidates by extending the root entities with all possible outward edges (relationship) in Freebase. Some example fact candidates generated from the root entity “Barack Obama” are illustrated in the following figure.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/images/candidates.png&quot; alt=&quot;_config.yml&quot; /&gt;&lt;/p&gt;
+&lt;div style=&quot;text-align:center&quot;&gt;
+&lt;img src=&quot;/images/candidates.png&quot; /&gt;
+&lt;/div&gt;
 
 &lt;h4 id=&quot;relation-matching-with-bi-directional-lstm&quot;&gt;Relation Matching with Bi-directional LSTM&lt;/h4&gt;
+&lt;p&gt;Long Short Term Memory networks – usually just called “LSTMs” – are a special kind of RNN, capable of learning long-term dependencies. The motivation for using LSTM is that LSTM has been proved to be quite effective when solving machine translation problems, and matching relations can be considered as a form of translation.&lt;/p&gt;
+
+&lt;div style=&quot;text-align:center&quot;&gt;
+&lt;img src=&quot;/images/LSTM3-chain.png&quot; /&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Each Bi-directional LSTM model is trained pairwisely. Consider there are total of &lt;script type=&quot;math/tex&quot;&gt;n&lt;/script&gt; fact candidates for the query &lt;script type=&quot;math/tex&quot;&gt;q&lt;/script&gt;. We pair them up and get a total of &lt;script type=&quot;math/tex&quot;&gt;{n \choose 2} = \frac{n(n-1)}{2}&lt;/script&gt; training instances for query &lt;script type=&quot;math/tex&quot;&gt;q&lt;/script&gt;. For each training instance pair &lt;script type=&quot;math/tex&quot;&gt;(f_1, f_2)&lt;/script&gt;, the corresponding label will be either &lt;script type=&quot;math/tex&quot;&gt;1&lt;/script&gt; or &lt;script type=&quot;math/tex&quot;&gt;-1&lt;/script&gt; depending on which fact candidate has higher $F_1$ measure. The &lt;script type=&quot;math/tex&quot;&gt;F_1&lt;/script&gt; measure of a fact candidate is computed by the precision and recall of the answers compared with the gold answers provided by the dataset. The pair of fact candidates will then be fed into a pair of identical Bi-directional LSTM model ranking units, and the ranking score of each fact candidate $f$ can later be computed by the ranking unit after the training process.&lt;/p&gt;
+
+&lt;p&gt;The query text and the fact candidate components (subject, relation, object) are parsed into word tokens or tri-character-grams as described in [&lt;sup id=&quot;fnref:fn7&quot;&gt;&lt;a href=&quot;#fn:fn7&quot; class=&quot;footnote&quot;&gt;3&lt;/a&gt;&lt;/sup&gt;]. For example, the text “barack obama” will be translated into the following tokens,&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\Big[ \text{#ba, bar, ara, rac, ack, ck#, #ob, oba, bam, ama, ma#}\Big]&lt;/script&gt;
+
+&lt;p&gt;These tokens will be input to the embedding layer of each model. The structures of the ranking units for both deep learning models are illustrated below.&lt;/p&gt;
+
+&lt;div style=&quot;text-align:center&quot;&gt;
+&lt;img src=&quot;/images/lstm.png&quot; /&gt;
+&lt;/div&gt;
+
+&lt;p&gt;In the LSTM Ranking model, the ranking unit will take a single sentence as input consists of the question, subject and relation tokens. With each token input into the embedding matrix, a long list of embedding vectors is passed to the Bidirectional LSTM layer with output size of 1, so that the output of the LSTM layer will be the ranking score of the input fact candidate.&lt;/p&gt;
+
+&lt;p&gt;Different from the LSTM Ranking model, the LSTM Joint model will separate the question and relation tokens as separate input instead of combining them together. The corresponding embedding vectors are passed to two separate Bi-directional LSTM layers, and the final ranking score of the fact candidate is the cosine similarity calculated from the output of the two LSTM layers.
+&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;h4 id=&quot;distributed-question-relation-similarity-computation&quot;&gt;Distributed Question-Relation Similarity Computation&lt;/h4&gt;
 &lt;p&gt;Given the large amount of triplets to be searched, it provided our group sufficient motivation to distribute the computation to multiple nodes across the network. Each query request can be packaged and sent to a pool of workers, such that data-parallelism can be leveraged upon. In order to achieve this goal, we eventually decided the following structure:&lt;/p&gt;
@@ -42,19 +71,16 @@ and we will cover the following topics in this report:&lt;/p&gt;
   &lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h4 id=&quot;learning-to-rank&quot;&gt;Learning-to-Rank&lt;/h4&gt;
-
 &lt;p&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;results&quot;&gt;RESULTS&lt;/h2&gt;
 &lt;p&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
 
-&lt;h2 id=&quot;references&quot;&gt;REFERENCES&lt;/h2&gt;
-&lt;p&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
-
 &lt;h2 id=&quot;work-distribution&quot;&gt;WORK DISTRIBUTION&lt;/h2&gt;
 &lt;p&gt;Equal work was performed by both project members.
 &lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;references&quot;&gt;REFERENCES&lt;/h2&gt;
 
 &lt;div class=&quot;footnotes&quot;&gt;
   &lt;ol&gt;
@@ -63,6 +89,9 @@ and we will cover the following topics in this report:&lt;/p&gt;
     &lt;/li&gt;
     &lt;li id=&quot;fn:fn8&quot;&gt;
       &lt;p&gt;V. I. Spitkovsky and A. X. Chang. A cross-lingual dictionary for english wikipedia concepts. In N. C. C. Chair), K. Choukri, T. Declerck, M. U. Doan, B. Maegaard, J. Mariani, A. Moreno, J. Odijk, and S. Piperidis, editors, Proceedings of the Eight International Conference on Language Resources and Evaluation (LREC’12), Istanbul, Turkey, may 2012. European Language Resources Association (ELRA).&amp;nbsp;&lt;a href=&quot;#fnref:fn8&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:fn7&quot;&gt;
+      &lt;p&gt;W. Yih, M. Chang, X. He, and J. Gao. Semantic parsing via staged query graph generation: Question answering with knowledge base. In Proceedings of the 53rd Annual Meeting of the Association for Computational Linguistics and the 7th International Joint Conference on Natural Language Processing of the Asian Federation of Natural Language Processing, ACL 2015, July 26-31, 2015, Beijing, China, Volume 1: Long Papers, pages 1321–1331, 2015.&amp;nbsp;&lt;a href=&quot;#fnref:fn7&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
     &lt;/li&gt;
   &lt;/ol&gt;
 &lt;/div&gt;</content><author><name></name></author><summary type="html">This document is a final report of our Distributed Question Answering System project for the course 15-418 Parallel Computer Architecture and Programming, and we will cover the following topics in this report: Summary Background Approach Results</summary></entry><entry><title type="html">Project Checkpoint</title><link href="http://localhost:4000/Project-Checkpoint/" rel="alternate" type="text/html" title="Project Checkpoint" /><published>2017-04-23T00:00:00-04:00</published><updated>2017-04-23T00:00:00-04:00</updated><id>http://localhost:4000/Project-Checkpoint</id><content type="html" xml:base="http://localhost:4000/Project-Checkpoint/">&lt;p&gt;This document is a checkpoint review of our &lt;strong&gt;Distributed Question Answering System&lt;/strong&gt; project for the course &lt;strong&gt;15-418 Parallel Computer Architecture and Programming&lt;/strong&gt;, and we will cover the following topics in this report:&lt;/p&gt;
