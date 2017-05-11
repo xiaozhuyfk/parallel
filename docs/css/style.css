@@ -1,12 +1,10 @@
 
 #controls {
   width: 100%;
-  float: left;
   margin-bottom: 10px;
 }
 
 .control {
-  float: left;
   padding-left: 20px;
 }
 
