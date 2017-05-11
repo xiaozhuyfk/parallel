@@ -13,6 +13,14 @@
     <link rel="stylesheet" type="text/css" href="{{ site.baseurl }}/style.css" />
     <link rel="alternate" type="application/rss+xml" title="{{ site.name }} - {{ site.description }}" href="{{ site.baseurl }}/feed.xml" />
 
+    <!-- CSS concatenated and minified via ant build script-->
+    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- end CSS-->
+
+    <script src="js/libs/modernizr-2.0.6.min.js"></script>
+
     <!-- Created with Jekyll Now - http://github.com/barryclark/jekyll-now -->
   </head>
 
@@ -35,6 +43,28 @@
       </div>
     </div>
 
+    <div id="controls">
+
+        <div id="layouts" class="control" style="padding-left: 475px">
+            <h3>Layout</h3>
+            <a id="force" class="active">Freebase Graph</a>
+            <a id="top5">Top 5 Candidates</a>
+        </div>
+
+        <div id="search_section" class="control">
+            <p class="search_title">Search <input type="text" class="text-input" id="search" value=""/></p>
+        </div>
+
+        <br><br>
+
+        <div id="main" role="main">
+            <div id="vis"></div>
+        </div>
+
+        <br><br>
+
+    </div> <!--! end of #container -->
+
     <div id="main" role="main" class="container">
       {{ content }}
     </div>
@@ -48,5 +78,33 @@
     </div>
 
     {% include analytics.html %}
+
+
+    <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script> -->
+    <script>window.jQuery || document.write('<script src="js/libs/jquery-1.7.2.min.js"><\/script>')</script>
+
+
+    <script defer src="../js/plugins.js"></script>
+    <script defer src="../js/script.js"></script>
+    <script src="../js/libs/coffee-script.js"></script>
+    <script src="../js/libs/d3.v2.js"></script>
+    <script src="../js/Tooltip.js"></script>
+    <script type="text/coffeescript" src="../coffee/network.coffee"></script>
+
+    <script> // Change UA-XXXXX-X to be your site's ID
+    window._gaq = [['_setAccount', 'UAXXXXXXXX1'], ['_trackPageview'], ['_trackPageLoadTime']];
+    Modernizr.load({
+        load: ('https:' == location.protocol ? '//ssl' : '//www') + '.google-analytics.com/ga.js'
+    });
+    </script>
+
+
+    <!--[if lt IE 7 ]>
+    <script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
+    <script>window.attachEvent('onload', function () {
+        CFInstall.check({mode: 'overlay'})
+    })</script>
+    <![endif]-->
+
   </body>
 </html>
