@@ -2,7 +2,6 @@
 *.pyc
 *.class
 svm_rank/
-data/
 lib/
 virtuoso-db/
 virtuoso-opensource/
