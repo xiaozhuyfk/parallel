@@ -1,9 +1,4 @@
 
-a, a:visited {
-  color: #4d4d4d;
-  text-decoration: underline;
-}
-
 .tooltip {
   position: absolute;
   top: 100px;
