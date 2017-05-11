@@ -166,8 +166,8 @@ graph = null
 top5 = null
 
 Network = () ->
-    width = 1080
-    height = 960
+    width = 800
+    height = 500
 
     # allData will store the unfiltered data
     allData = []
