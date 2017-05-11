@@ -19,6 +19,8 @@ In this project, we built an end-to-end Question Answering system based on Knole
 
 
 ## BACKGROUND
+
+#### What is Freebase?
 <br><br>
 
 
