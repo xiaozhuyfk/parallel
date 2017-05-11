@@ -511,5 +511,5 @@ $ ->
             searchTerm = $(this).val()
             myNetwork.updateSearch(searchTerm)
 
-    d3.json "http://xiaozhuyfk.github.io/AMA_Network/data/bigos.json", (json) ->
+    d3.json "https://xiaozhuyfk.github.io/AMA_Network/data/bigos.json", (json) ->
         myNetwork("#vis", json)
