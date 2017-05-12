@@ -335,7 +335,7 @@ class Ranker(object):
 
         start_time = time.time()
         computation = self.parallel(
-            delayed(compute_similarity(candidates, model, sentence_size)) for model, sentence_size in self.models
+            delayed(compute_similarity)(candidates, model, sentence_size) for model, sentence_size in self.models
         )
 
         pairwise_predictions = computation[0]
