@@ -32,8 +32,11 @@ The data is stored in structured databases where information can be retrieved us
 
 
 
-#### Elastic Server
+#### Backend Design
 
+<div style="text-align:center">
+<img src="https://xiaozhuyfk.github.io/parallel/images/server.png" />
+</div>
 
 <br><br>
 
