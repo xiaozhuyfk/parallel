@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-05-11T20:43:13-04:00</updated><id>http://localhost:4000/</id><title type="html">Ask Me Anything</title><subtitle>Distributed Question Answering System with Freebase</subtitle><entry><title type="html">Final Writeup</title><link href="http://localhost:4000/Final-Writeup/" rel="alternate" type="text/html" title="Final Writeup" /><published>2017-05-10T00:00:00-04:00</published><updated>2017-05-10T00:00:00-04:00</updated><id>http://localhost:4000/Final-Writeup</id><content type="html" xml:base="http://localhost:4000/Final-Writeup/">&lt;p&gt;This document is a final report of our &lt;strong&gt;Distributed Question Answering System&lt;/strong&gt; project for the course &lt;strong&gt;15-418 Parallel Computer Architecture and Programming&lt;/strong&gt;, 
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-05-11T22:07:09-04:00</updated><id>http://localhost:4000/</id><title type="html">Ask Me Anything</title><subtitle>Distributed Question Answering System with Freebase</subtitle><entry><title type="html">Final Writeup</title><link href="http://localhost:4000/Final-Writeup/" rel="alternate" type="text/html" title="Final Writeup" /><published>2017-05-10T00:00:00-04:00</published><updated>2017-05-10T00:00:00-04:00</updated><id>http://localhost:4000/Final-Writeup</id><content type="html" xml:base="http://localhost:4000/Final-Writeup/">&lt;p&gt;This document is a final report of our &lt;strong&gt;Distributed Question Answering System&lt;/strong&gt; project for the course &lt;strong&gt;15-418 Parallel Computer Architecture and Programming&lt;/strong&gt;, 
 and we will cover the following topics in this report:&lt;/p&gt;
 &lt;ul&gt;
   &lt;li&gt;Summary&lt;/li&gt;
@@ -86,17 +86,46 @@ and we will cover the following topics in this report:&lt;/p&gt;
 &lt;h2 id=&quot;results&quot;&gt;RESULTS&lt;/h2&gt;
 
 &lt;h4 id=&quot;evaluation-data-webquestions&quot;&gt;Evaluation Data: WebQuestions&lt;/h4&gt;
-&lt;p&gt;WebQuestions is the question set used for evaluation. This benchmark contains a set of questions that cover a wide range of topics. In this section, we will introduce the characteristics of each benchmark, and how they differ with each other in terms of question types and question complexity.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;WebQuestions&lt;/strong&gt; benchmark contains 5810 questions in total, and all questions were created by the Google suggest API. For training and testing purposes, the dataset has been partitioned into two segments where 3778 (70%) of the questions will be used for training and 2032 (30%) of the questions will be used for testing. The queries in WebQuestions are less grammatical and are not specifically tailored to Freebase, which make the questions more complex and more difficult to answer for Question Answering systems. The reference answers for the questions were obtained by crowd-sourcing, which might introduce additional noises during system evaluation. Some example questions in the WebQuestions benchmark are listed below,&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\text{what is ryan seacrest radio show?} \\
-\text{what is my timezone in louisiana?} \\
-...&lt;/script&gt;
+&lt;p&gt;&lt;strong&gt;WebQuestions&lt;/strong&gt; benchmark contains 5810 questions in total, and all questions were created by the Google suggest API. For training and testing purposes, the dataset has been partitioned into two segments where 3778 (70%) of the questions will be used for training and 2032 (30%) of the questions will be used for testing. The queries in WebQuestions are less grammatical and are not specifically tailored to Freebase, which make the questions more complex and more difficult to answer for Question Answering systems. The reference answers for the questions were obtained by crowd-sourcing, which might introduce additional noises during system evaluation.&lt;/p&gt;
 
 &lt;p&gt;The performance is evaluated by the average precision, average recall and average &lt;script type=&quot;math/tex&quot;&gt;F_1&lt;/script&gt; measure of the retrieval answers across all questions in the test set. The average &lt;script type=&quot;math/tex&quot;&gt;F_1&lt;/script&gt; measure of the dataset is computed as following,&lt;/p&gt;
 
 &lt;script type=&quot;math/tex; mode=display&quot;&gt;\bar{F_1} = \frac{1}{n} \sum_{i=1}^{n} F_1(\text{reference}, \text{answer})&lt;/script&gt;
+
+&lt;h4 id=&quot;accuracy&quot;&gt;Accuracy&lt;/h4&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;System&lt;/th&gt;
+      &lt;th&gt;Average Recall&lt;/th&gt;
+      &lt;th&gt;Average Precision&lt;/th&gt;
+      &lt;th&gt;Average F1&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;AQQU&lt;/td&gt;
+      &lt;td&gt;n/a&lt;/td&gt;
+      &lt;td&gt;n/a&lt;/td&gt;
+      &lt;td&gt;49.4%&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;STAGG&lt;/td&gt;
+      &lt;td&gt;60.7%&lt;/td&gt;
+      &lt;td&gt;52.8%&lt;/td&gt;
+      &lt;td&gt;52.5%&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;AMA&lt;/td&gt;
+      &lt;td&gt;57.2%&lt;/td&gt;
+      &lt;td&gt;39.6%&lt;/td&gt;
+      &lt;td&gt;38.2%&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h4 id=&quot;speedup&quot;&gt;Speedup&lt;/h4&gt;
 
 &lt;p&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
 

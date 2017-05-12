@@ -108,19 +108,21 @@ Given the large amount of triplets to be searched, it provided our group suffici
 ## RESULTS
 
 #### Evaluation Data: WebQuestions
-WebQuestions is the question set used for evaluation. This benchmark contains a set of questions that cover a wide range of topics. In this section, we will introduce the characteristics of each benchmark, and how they differ with each other in terms of question types and question complexity.
-
-**WebQuestions** benchmark contains 5810 questions in total, and all questions were created by the Google suggest API. For training and testing purposes, the dataset has been partitioned into two segments where 3778 (70%) of the questions will be used for training and 2032 (30%) of the questions will be used for testing. The queries in WebQuestions are less grammatical and are not specifically tailored to Freebase, which make the questions more complex and more difficult to answer for Question Answering systems. The reference answers for the questions were obtained by crowd-sourcing, which might introduce additional noises during system evaluation. Some example questions in the WebQuestions benchmark are listed below,
-
-$$
-\text{what is ryan seacrest radio show?} \\
-\text{what is my timezone in louisiana?} \\
-...
-$$
+**WebQuestions** benchmark contains 5810 questions in total, and all questions were created by the Google suggest API. For training and testing purposes, the dataset has been partitioned into two segments where 3778 (70%) of the questions will be used for training and 2032 (30%) of the questions will be used for testing. The queries in WebQuestions are less grammatical and are not specifically tailored to Freebase, which make the questions more complex and more difficult to answer for Question Answering systems. The reference answers for the questions were obtained by crowd-sourcing, which might introduce additional noises during system evaluation.
 
 The performance is evaluated by the average precision, average recall and average $$F_1$$ measure of the retrieval answers across all questions in the test set. The average $$F_1$$ measure of the dataset is computed as following,
 
 $$\bar{F_1} = \frac{1}{n} \sum_{i=1}^{n} F_1(\text{reference}, \text{answer})$$
+
+#### Accuracy
+
+| System | Average Recall | Average Precision | Average F1 |
+|--------|----------------|-------------------|------------|
+| AQQU   | n/a | n/a | 49.4% |
+| STAGG  | 60.7% | 52.8% | 52.5% |
+| AMA    | 57.2% | 39.6% | 38.2% |
+
+#### Speedup
 
 <br><br>
 

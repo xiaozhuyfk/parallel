@@ -164,17 +164,46 @@ and we will cover the following topics in this report:</p>
 <h2 id="results">RESULTS</h2>
 
 <h4 id="evaluation-data-webquestions">Evaluation Data: WebQuestions</h4>
-<p>WebQuestions is the question set used for evaluation. This benchmark contains a set of questions that cover a wide range of topics. In this section, we will introduce the characteristics of each benchmark, and how they differ with each other in terms of question types and question complexity.</p>
-
-<p><strong>WebQuestions</strong> benchmark contains 5810 questions in total, and all questions were created by the Google suggest API. For training and testing purposes, the dataset has been partitioned into two segments where 3778 (70%) of the questions will be used for training and 2032 (30%) of the questions will be used for testing. The queries in WebQuestions are less grammatical and are not specifically tailored to Freebase, which make the questions more complex and more difficult to answer for Question Answering systems. The reference answers for the questions were obtained by crowd-sourcing, which might introduce additional noises during system evaluation. Some example questions in the WebQuestions benchmark are listed below,</p>
-
-<script type="math/tex; mode=display">\text{what is ryan seacrest radio show?} \\
-\text{what is my timezone in louisiana?} \\
-...</script>
+<p><strong>WebQuestions</strong> benchmark contains 5810 questions in total, and all questions were created by the Google suggest API. For training and testing purposes, the dataset has been partitioned into two segments where 3778 (70%) of the questions will be used for training and 2032 (30%) of the questions will be used for testing. The queries in WebQuestions are less grammatical and are not specifically tailored to Freebase, which make the questions more complex and more difficult to answer for Question Answering systems. The reference answers for the questions were obtained by crowd-sourcing, which might introduce additional noises during system evaluation.</p>
 
 <p>The performance is evaluated by the average precision, average recall and average <script type="math/tex">F_1</script> measure of the retrieval answers across all questions in the test set. The average <script type="math/tex">F_1</script> measure of the dataset is computed as following,</p>
 
 <script type="math/tex; mode=display">\bar{F_1} = \frac{1}{n} \sum_{i=1}^{n} F_1(\text{reference}, \text{answer})</script>
+
+<h4 id="accuracy">Accuracy</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>System</th>
+      <th>Average Recall</th>
+      <th>Average Precision</th>
+      <th>Average F1</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>AQQU</td>
+      <td>n/a</td>
+      <td>n/a</td>
+      <td>49.4%</td>
+    </tr>
+    <tr>
+      <td>STAGG</td>
+      <td>60.7%</td>
+      <td>52.8%</td>
+      <td>52.5%</td>
+    </tr>
+    <tr>
+      <td>AMA</td>
+      <td>57.2%</td>
+      <td>39.6%</td>
+      <td>38.2%</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="speedup">Speedup</h4>
 
 <p><br /><br /></p>
 
