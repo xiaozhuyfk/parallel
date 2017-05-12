@@ -147,6 +147,10 @@ and we will cover the following topics in this report:</p>
 <h4 id="distributed-question-relation-similarity-computation">Distributed Question-Relation Similarity Computation</h4>
 <p>Given the large amount of triplets to be searched, it provided our group sufficient motivation to distribute the computation to multiple nodes across the network. Each query request can be packaged and sent to a pool of workers, such that data-parallelism can be leveraged upon. In order to achieve this goal, we eventually decided the following structure:</p>
 
+<div style="text-align:center">
+<img src="https://xiaozhuyfk.github.io/parallel/images/model.png" />
+</div>
+
 <ul>
   <li>
     <p>We adapted a three-level pipelined structure. The ventilator is the producer of the queries and is responsible for packaging the data and sending jobs to workers. The workers are the intermediate consumers of the pipeline and are accountable of the most CPU intensive work. Instead of sending the result back to the producer, the workers will send the result downstream to a common result collector to avoid excessive communication traffic on the producer side. It also reduces contention for physical resources inside the ventilator. If further iterations are required, the message could be sent back from result manager to ventilator in a message batching manner, which will also be illustrated later.</p>
