@@ -334,40 +334,9 @@ class Ranker(object):
 
 
         start_time = time.time()
-        try:
-            computation = self.parallel(
-                delayed(compute_similarity(candidates, model, sentence_size)) for model, sentence_size in self.models
-            )
-            """
-            pairwise_predictions = self.pairwise_model.predict(candidates, 28).flatten()
-            pairwise_trigram_predictions = self.pairwise_trigram.predict(candidates, 203).flatten()
-            jointpairwise_predictions = self.jointpairwise.predict(
-                candidates,
-                28,
-                'query_tokens',
-                'relation_tokens'
-            ).flatten()
-            jointpairwise_trigram_predictions = self.jointpairwise_trigram.predict(
-                candidates,
-                203,
-                'query_trigram',
-                'relation_trigram'
-            ).flatten()
-            embedding_predictions = self.embedding.predict(
-                candidates,
-                28,
-                'query_tokens',
-                'relation_tokens'
-            ).flatten()
-            embedding_trigram_predictions = self.embedding_trigram.predict(
-                candidates,
-                203,
-                'query_trigram',
-                'relation_trigram'
-            ).flatten()
-            """
-        except:
-            return []
+        computation = self.parallel(
+            delayed(compute_similarity(candidates, model, sentence_size)) for model, sentence_size in self.models
+        )
 
         pairwise_predictions = computation[0]
         pairwise_trigram_predictions = computation[1]
