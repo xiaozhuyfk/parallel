@@ -290,7 +290,6 @@ class Ranker(object):
         json = modules.facts_extractor.extract_fact_list_with_entity_linker(question)
         if json == []:
             return []
-        print json
 
         start_time = time.time()
         candidates = []

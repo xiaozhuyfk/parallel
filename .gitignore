@@ -25,3 +25,5 @@ support_sentence/
 support_sentence_stat/
 docs/_site/
 docs/.sass-cache/
+cache/
+data/

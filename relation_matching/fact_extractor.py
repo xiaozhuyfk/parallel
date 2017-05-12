@@ -1,6 +1,8 @@
 import logging
 import modules
 import time
+import os
+from relation_matching.util import codecsDumpJson, codecsLoadJson
 
 
 logger = logging.getLogger(__name__)
@@ -9,6 +11,7 @@ class FactExtractor(object):
 
     def __init__(self, config_options):
         self.config_options = config_options
+        self.cache_dir = config_options.get('Cache', 'cache-dir')
         self.backend = modules.sparql_backend
 
         self.entities_with_alias_query = '''
@@ -38,6 +41,18 @@ class FactExtractor(object):
     def init_from_config(config_options):
         return FactExtractor(config_options)
 
+    def in_cache(self, mid):
+        file_path = self.cache_dir + mid
+        return os.path.isfile(file_path)
+
+    def load_from_cache(self, mid):
+        file_path = self.cache_dir + mid
+        return codecsLoadJson(file_path)
+
+    def store_fact_list(self, mid, d):
+        file_path = self.cache_dir + mid
+        return codecsDumpJson(file_path, d)
+
     def extract_fact_list_with_entity_linker(self, question):
         start_time = time.time()
         entities = modules.entity_linker.identify_entities(question)
@@ -50,6 +65,11 @@ class FactExtractor(object):
         for ie in entities:
             e = ie.entity
             s, s_name = e.id, e.name
+
+            if self.in_cache(s):
+                result.append(self.load_from_cache(s))
+                continue
+
             score = ie.surface_score
             s_name_result = self.backend.query(self.name_by_id_query % s)
             if s_name_result == []:
@@ -113,6 +133,7 @@ class FactExtractor(object):
                  "score" : score,
                  "relations" : relations}
             result.append(d)
+            self.store_fact_list(s, d)
 
         duration = (time.time() - start_time) * 1000
         logger.info("Facts extraction time: %.2f ms." % duration)
