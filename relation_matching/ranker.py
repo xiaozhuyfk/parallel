@@ -315,32 +315,35 @@ class Ranker(object):
         if len(candidates) == 0: return []
 
         start_time = time.time()
-        pairwise_predictions = self.pairwise_model.predict(candidates, 28).flatten()
-        pairwise_trigram_predictions = self.pairwise_trigram.predict(candidates, 203).flatten()
-        jointpairwise_predictions = self.jointpairwise.predict(
-            candidates,
-            28,
-            'query_tokens',
-            'relation_tokens'
-        ).flatten()
-        jointpairwise_trigram_predictions = self.jointpairwise_trigram.predict(
-            candidates,
-            203,
-            'query_trigram',
-            'relation_trigram'
-        ).flatten()
-        embedding_predictions = self.embedding.predict(
-            candidates,
-            28,
-            'query_tokens',
-            'relation_tokens'
-        ).flatten()
-        embedding_trigram_predictions = self.embedding_trigram.predict(
-            candidates,
-            203,
-            'query_trigram',
-            'relation_trigram'
-        ).flatten()
+        try:
+            pairwise_predictions = self.pairwise_model.predict(candidates, 28).flatten()
+            pairwise_trigram_predictions = self.pairwise_trigram.predict(candidates, 203).flatten()
+            jointpairwise_predictions = self.jointpairwise.predict(
+                candidates,
+                28,
+                'query_tokens',
+                'relation_tokens'
+            ).flatten()
+            jointpairwise_trigram_predictions = self.jointpairwise_trigram.predict(
+                candidates,
+                203,
+                'query_trigram',
+                'relation_trigram'
+            ).flatten()
+            embedding_predictions = self.embedding.predict(
+                candidates,
+                28,
+                'query_tokens',
+                'relation_tokens'
+            ).flatten()
+            embedding_trigram_predictions = self.embedding_trigram.predict(
+                candidates,
+                203,
+                'query_trigram',
+                'relation_trigram'
+            ).flatten()
+        except:
+            return []
         duration = (time.time() - start_time) * 1000
         logger.info("Relation Score Computation time: %.2f ms." % duration)
 

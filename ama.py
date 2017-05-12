@@ -39,8 +39,8 @@ def play():
 def test(dataset):
     queries = load_eval_queries(dataset)
     file_path = "/home/ubuntu/parallel/duration.txt"
-    writeFile(file_path, "")
-    for query in queries:
+    #writeFile(file_path, "")
+    for query in queries[:-5]:
         question = query.utterance
         start_time = time.time()
         modules.facts_ranker.rank(question)
