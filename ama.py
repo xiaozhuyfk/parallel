@@ -43,7 +43,7 @@ def test(dataset):
     for query in queries:
         question = query.utterance
         start_time = time.time()
-        modules.facts_ranker.rank(question)
+        modules.facts_ranker.parallel_rank(question)
         duration = (time.time() - start_time) * 1000
         writeFile(file_path, str(duration) + '\n', 'a')
 

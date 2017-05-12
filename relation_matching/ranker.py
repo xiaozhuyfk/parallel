@@ -337,10 +337,14 @@ class Ranker(object):
 
 
         start_time = time.time()
-        computation = self.parallel(
-            delayed(compute_similarity)(model, candidates, sentence_size, query, relation)
-            for model, sentence_size, query, relation in self.models
-        )
+
+        try:
+            computation = self.parallel(
+                delayed(compute_similarity)(model, candidates, sentence_size, query, relation)
+                for model, sentence_size, query, relation in self.models
+            )
+        except:
+            return []
 
         pairwise_predictions = computation[0]
         pairwise_trigram_predictions = computation[1]
