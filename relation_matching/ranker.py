@@ -167,8 +167,11 @@ class sim_thread (threading.Thread):
         pass
 
 
-def compute_similarity(candidates, model, sentence_size):
-    return model.predict(candidates, sentence_size).flatten()
+def compute_similarity(model, candidates, sentence_size, query, relation):
+    if query is None:
+        return model.predict(candidates, sentence_size).flatten()
+    else:
+        return model.predict(candidates, sentence_size, query, relation).flatten()
 
 
 class Ranker(object):
@@ -198,12 +201,12 @@ class Ranker(object):
         self.embedding = self.get_model('EmbeddingJointPairwise')
         self.embedding_trigram = self.get_model('EmbeddingJointPairwiseTrigram')
         self.models = [
-            (self.pairwise_model, 28),
-            (self.pairwise_trigram, 203),
-            (self.jointpairwise, 28),
-            (self.jointpairwise_trigram, 203),
-            (self.embedding, 28),
-            (self.embedding_trigram, 203)
+            (self.pairwise_model, 28, None, None),
+            (self.pairwise_trigram, 203, None, None),
+            (self.jointpairwise, 28, 'query_tokens', 'relation_tokens'),
+            (self.jointpairwise_trigram, 203, 'query_trigram', 'relation_trigram'),
+            (self.embedding, 28, 'query_tokens', 'relation_tokens'),
+            (self.embedding_trigram, 203, 'query_trigram', 'relation_trigram')
         ]
 
         num_cores = multiprocessing.cpu_count()
@@ -335,7 +338,8 @@ class Ranker(object):
 
         start_time = time.time()
         computation = self.parallel(
-            delayed(compute_similarity)(candidates, model, sentence_size) for model, sentence_size in self.models
+            delayed(compute_similarity)(model, candidates, sentence_size, query, relation)
+            for model, sentence_size, query, relation in self.models
         )
 
         pairwise_predictions = computation[0]
