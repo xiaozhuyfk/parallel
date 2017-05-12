@@ -141,7 +141,48 @@ $$\bar{F_1} = \frac{1}{n} \sum_{i=1}^{n} F_1(\text{reference}, \text{answer})$$
 | STAGG [[^fn7]] | 60.7% | 52.8% | 52.5% |
 | AMA    | 57.2% | 39.6% | 38.2% |
 
+<br><br>
+
 #### Speedup
+
+<script type="text/javascript" src="https://xiaozhuyfk.github.io/parallel/js/plotlyjs-bundle.js"></script>
+<script type="text/javascript" src="https://xiaozhuyfk.github.io/parallel/js/figure.js"></script>
+
+<div id="eb3b94c4-64bf-4ea3-ac97-e5e466d298f5" style="width: 100%; height: 100%;" class="plotly-graph-div"></div>
+<script type="text/javascript">
+    (function(){
+        window.PLOTLYENV={'BASE_URL': 'https://plot.ly'};
+
+        var gd = document.getElementById('eb3b94c4-64bf-4ea3-ac97-e5e466d298f5')
+        var resizeDebounce = null;
+
+        function resizePlot() {
+            var bb = gd.getBoundingClientRect();
+            Plotly.relayout(gd, {
+                width: bb.width,
+                height: bb.height
+            });
+        }
+
+        
+        window.addEventListener('resize', function() {
+            if (resizeDebounce) {
+                window.clearTimeout(resizeDebounce);
+            }
+            resizeDebounce = window.setTimeout(resizePlot, 100);
+        });
+        
+
+        
+        Plotly.plot(gd,  {
+            data: figure.data,
+            layout: figure.layout,
+            frames: figure.frames,
+            config: {"mapboxAccessToken": "pk.eyJ1IjoiY2hyaWRkeXAiLCJhIjoiY2lxMnVvdm5iMDA4dnhsbTQ5aHJzcGs0MyJ9.X9o_rzNLNesDxdra4neC_A", "linkText": "Export to plot.ly", "showLink": true}
+        });
+        
+   }());
+</script>
 
 <br><br>
 

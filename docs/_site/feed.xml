@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-05-12T01:00:53-04:00</updated><id>http://localhost:4000/</id><title type="html">Ask Me Anything</title><subtitle>Distributed Question Answering System with Freebase</subtitle><entry><title type="html">Final Writeup</title><link href="http://localhost:4000/Final-Writeup/" rel="alternate" type="text/html" title="Final Writeup" /><published>2017-05-10T00:00:00-04:00</published><updated>2017-05-10T00:00:00-04:00</updated><id>http://localhost:4000/Final-Writeup</id><content type="html" xml:base="http://localhost:4000/Final-Writeup/">&lt;p&gt;This document is a final report of our &lt;strong&gt;Distributed Question Answering System&lt;/strong&gt; project for the course &lt;strong&gt;15-418 Parallel Computer Architecture and Programming&lt;/strong&gt;, 
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-05-12T05:23:57-04:00</updated><id>http://localhost:4000/</id><title type="html">Ask Me Anything</title><subtitle>Distributed Question Answering System with Freebase</subtitle><entry><title type="html">Final Writeup</title><link href="http://localhost:4000/Final-Writeup/" rel="alternate" type="text/html" title="Final Writeup" /><published>2017-05-10T00:00:00-04:00</published><updated>2017-05-10T00:00:00-04:00</updated><id>http://localhost:4000/Final-Writeup</id><content type="html" xml:base="http://localhost:4000/Final-Writeup/">&lt;p&gt;This document is a final report of our &lt;strong&gt;Distributed Question Answering System&lt;/strong&gt; project for the course &lt;strong&gt;15-418 Parallel Computer Architecture and Programming&lt;/strong&gt;, 
 and we will cover the following topics in this report:&lt;/p&gt;
 &lt;ul&gt;
   &lt;li&gt;Summary&lt;/li&gt;
@@ -151,7 +151,49 @@ and we will cover the following topics in this report:&lt;/p&gt;
   &lt;/tbody&gt;
 &lt;/table&gt;
 
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+
 &lt;h4 id=&quot;speedup&quot;&gt;Speedup&lt;/h4&gt;
+
+&lt;script type=&quot;text/javascript&quot; src=&quot;https://xiaozhuyfk.github.io/parallel/js/plotlyjs-bundle.js&quot;&gt;&lt;/script&gt;
+
+&lt;script type=&quot;text/javascript&quot; src=&quot;https://xiaozhuyfk.github.io/parallel/js/figure.js&quot;&gt;&lt;/script&gt;
+
+&lt;div id=&quot;eb3b94c4-64bf-4ea3-ac97-e5e466d298f5&quot; style=&quot;width: 100%; height: 100%;&quot; class=&quot;plotly-graph-div&quot;&gt;&lt;/div&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+    (function(){
+        window.PLOTLYENV={'BASE_URL': 'https://plot.ly'};
+
+        var gd = document.getElementById('eb3b94c4-64bf-4ea3-ac97-e5e466d298f5')
+        var resizeDebounce = null;
+
+        function resizePlot() {
+            var bb = gd.getBoundingClientRect();
+            Plotly.relayout(gd, {
+                width: bb.width,
+                height: bb.height
+            });
+        }
+
+        
+        window.addEventListener('resize', function() {
+            if (resizeDebounce) {
+                window.clearTimeout(resizeDebounce);
+            }
+            resizeDebounce = window.setTimeout(resizePlot, 100);
+        });
+        
+
+        
+        Plotly.plot(gd,  {
+            data: figure.data,
+            layout: figure.layout,
+            frames: figure.frames,
+            config: {&quot;mapboxAccessToken&quot;: &quot;pk.eyJ1IjoiY2hyaWRkeXAiLCJhIjoiY2lxMnVvdm5iMDA4dnhsbTQ5aHJzcGs0MyJ9.X9o_rzNLNesDxdra4neC_A&quot;, &quot;linkText&quot;: &quot;Export to plot.ly&quot;, &quot;showLink&quot;: true}
+        });
+        
+   }());
+&lt;/script&gt;
 
 &lt;p&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
 
