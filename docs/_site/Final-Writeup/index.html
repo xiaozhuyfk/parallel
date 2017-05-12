@@ -94,11 +94,23 @@ and we will cover the following topics in this report:</p>
 <h2 id="background">BACKGROUND</h2>
 
 <h4 id="what-is-freebase">What is Freebase?</h4>
-<p>Freebase is a large collaborative knowledge base currently maintained by Google. It is essentially a large list of 19 billion triples that describe the relationship among different entities.</p>
+<p>Freebase [<sup id="fnref:fn3"><a href="#fn:fn3" class="footnote">1</a></sup>] is a large collaborative knowledge base currently maintained by Google. It is essentially a large list of 19 billion triples that describe the relationship among different entities.</p>
 
 <p>The data is stored in structured databases where information can be retrieved using well-defined query languages such as SPARQL and MQL. In this project, the Freebase data is loaded into the Virtuoso database, and SPARQL queries were initiated during the process of generating fact candidates for each question in order to request for information about entities and relations.</p>
 
 <h4 id="system-architecture">System Architecture</h4>
+<p>If we were asked to find the answer for the question “Who inspired Obama?” in Freebase, we might want to take the following steps:</p>
+<ul>
+  <li>Identify the question is about the entity “Barack Obama”</li>
+  <li>Scan through all possible relations connected to “Barack Obama”</li>
+  <li>Find the best matched relation “influence.influence_node.influenced_by”</li>
+</ul>
+
+<p>The architecture of the Question Answering system is illustrated below.</p>
+
+<div style="text-align:center">
+<img src="https://xiaozhuyfk.github.io/parallel/images/system.png" />
+</div>
 
 <h4 id="backend-design">Backend Design</h4>
 
@@ -110,7 +122,7 @@ and we will cover the following topics in this report:</p>
 
 <h2 id="approach">APPROACH</h2>
 <h4 id="fact-candidate-generation">Fact Candidate Generation</h4>
-<p>We used the Entity Linker in the Aqqu system [<sup id="fnref:fn1"><a href="#fn:fn1" class="footnote">1</a></sup>]. During the entity linking process, each subsequence <script type="math/tex">s</script> of the query text is matched with all Freebase entities that have name or alias that equal to <script type="math/tex">s</script>. These Freebase entities are the root entities recognized from the question, and the popolarity score computed with the CrossWikis dataset [<sup id="fnref:fn8"><a href="#fn:fn8" class="footnote">2</a></sup>] is added to the feature vector in the purpose of measuring entity linking accuracy. The CrossWikis dataset was created by web crawling hyperlinks of Wikipedia entities, and it could be used to measure the empirical distribution over Wikipedia entities. For entities that are not covered by CrossWikis, we only consider the exact name match.</p>
+<p>We used the Entity Linker in the Aqqu system [<sup id="fnref:fn1"><a href="#fn:fn1" class="footnote">2</a></sup>]. During the entity linking process, each subsequence <script type="math/tex">s</script> of the query text is matched with all Freebase entities that have name or alias that equal to <script type="math/tex">s</script>. These Freebase entities are the root entities recognized from the question, and the popolarity score computed with the CrossWikis dataset [<sup id="fnref:fn8"><a href="#fn:fn8" class="footnote">3</a></sup>] is added to the feature vector in the purpose of measuring entity linking accuracy. The CrossWikis dataset was created by web crawling hyperlinks of Wikipedia entities, and it could be used to measure the empirical distribution over Wikipedia entities. For entities that are not covered by CrossWikis, we only consider the exact name match.</p>
 
 <p>For example, the input question “who inspired obama?” will produce possible subsequences such as</p>
 
@@ -131,9 +143,9 @@ and we will cover the following topics in this report:</p>
 <img src="https://xiaozhuyfk.github.io/parallel/images/LSTM3-chain.png" />
 </div>
 
-<p>Each Bi-directional LSTM model is trained pairwisely. Consider there are total of <script type="math/tex">n</script> fact candidates for the query <script type="math/tex">q</script>. We pair them up and get a total of <script type="math/tex">{n \choose 2} = \frac{n(n-1)}{2}</script> training instances for query <script type="math/tex">q</script>. For each training instance pair <script type="math/tex">(f_1, f_2)</script>, the corresponding label will be either <script type="math/tex">1</script> or <script type="math/tex">-1</script> depending on which fact candidate has higher $F_1$ measure. The <script type="math/tex">F_1</script> measure of a fact candidate is computed by the precision and recall of the answers compared with the gold answers provided by the dataset. The pair of fact candidates will then be fed into a pair of identical Bi-directional LSTM model ranking units, and the ranking score of each fact candidate $f$ can later be computed by the ranking unit after the training process.</p>
+<p>Each Bi-directional LSTM model is trained pairwisely. Consider there are total of <script type="math/tex">n</script> fact candidates for the query <script type="math/tex">q</script>. We pair them up and get a total of <script type="math/tex">{n \choose 2} = \frac{n(n-1)}{2}</script> training instances for query <script type="math/tex">q</script>. For each training instance pair <script type="math/tex">(f_1, f_2)</script>, the corresponding label will be either <script type="math/tex">1</script> or <script type="math/tex">-1</script> depending on which fact candidate has higher <script type="math/tex">F_1</script> measure. The <script type="math/tex">F_1</script> measure of a fact candidate is computed by the precision and recall of the answers compared with the gold answers provided by the dataset. The pair of fact candidates will then be fed into a pair of identical Bi-directional LSTM model ranking units, and the ranking score of each fact candidate <script type="math/tex">f</script> can later be computed by the ranking unit after the training process.</p>
 
-<p>The query text and the fact candidate components (subject, relation, object) are parsed into word tokens or tri-character-grams as described in [<sup id="fnref:fn7"><a href="#fn:fn7" class="footnote">3</a></sup>]. For example, the text “barack obama” will be translated into the following tokens,</p>
+<p>The query text and the fact candidate components (subject, relation, object) are parsed into word tokens or tri-character-grams as described in [<sup id="fnref:fn7"><a href="#fn:fn7" class="footnote">4</a></sup>]. For example, the text “barack obama” will be translated into the following tokens,</p>
 
 <script type="math/tex; mode=display">\Big[ \text{#ba, bar, ara, rac, ack, ck#, #ob, oba, bam, ama, ma#}\Big]</script>
 
@@ -191,13 +203,13 @@ and we will cover the following topics in this report:</p>
   </thead>
   <tbody>
     <tr>
-      <td>AQQU</td>
+      <td>AQQU [<sup id="fnref:fn1:1"><a href="#fn:fn1" class="footnote">2</a></sup>]</td>
       <td>n/a</td>
       <td>n/a</td>
       <td>49.4%</td>
     </tr>
     <tr>
-      <td>STAGG</td>
+      <td>STAGG [<sup id="fnref:fn7:1"><a href="#fn:fn7" class="footnote">4</a></sup>]</td>
       <td>60.7%</td>
       <td>52.8%</td>
       <td>52.5%</td>
@@ -223,14 +235,17 @@ and we will cover the following topics in this report:</p>
 
 <div class="footnotes">
   <ol>
+    <li id="fn:fn3">
+      <p>K. Bollacker, C. Evans, P. Paritosh, T. Sturge, and J. Taylor. Freebase: A collaboratively created graph database for structuring human knowledge. In Proceedings of the 2008 ACM SIGMOD International Conference on Management of Data, SIGMOD ’08, pages 1247– 1250, New York, NY, USA, 2008. ACM.&nbsp;<a href="#fnref:fn3" class="reversefootnote">&#8617;</a></p>
+    </li>
     <li id="fn:fn1">
-      <p>H. Bast and E. Haussmann. More accurate question answering on freebase. In Proceedings of the 24th ACM International on Conference on Information and Knowledge Management, CIKM ’15, pages 1431–1440, New York, NY, USA, 2015. ACM.&nbsp;<a href="#fnref:fn1" class="reversefootnote">&#8617;</a></p>
+      <p>H. Bast and E. Haussmann. More accurate question answering on freebase. In Proceedings of the 24th ACM International on Conference on Information and Knowledge Management, CIKM ’15, pages 1431–1440, New York, NY, USA, 2015. ACM.&nbsp;<a href="#fnref:fn1" class="reversefootnote">&#8617;</a>&nbsp;<a href="#fnref:fn1:1" class="reversefootnote">&#8617;<sup>2</sup></a></p>
     </li>
     <li id="fn:fn8">
       <p>V. I. Spitkovsky and A. X. Chang. A cross-lingual dictionary for english wikipedia concepts. In N. C. C. Chair), K. Choukri, T. Declerck, M. U. Doan, B. Maegaard, J. Mariani, A. Moreno, J. Odijk, and S. Piperidis, editors, Proceedings of the Eight International Conference on Language Resources and Evaluation (LREC’12), Istanbul, Turkey, may 2012. European Language Resources Association (ELRA).&nbsp;<a href="#fnref:fn8" class="reversefootnote">&#8617;</a></p>
     </li>
     <li id="fn:fn7">
-      <p>W. Yih, M. Chang, X. He, and J. Gao. Semantic parsing via staged query graph generation: Question answering with knowledge base. In Proceedings of the 53rd Annual Meeting of the Association for Computational Linguistics and the 7th International Joint Conference on Natural Language Processing of the Asian Federation of Natural Language Processing, ACL 2015, July 26-31, 2015, Beijing, China, Volume 1: Long Papers, pages 1321–1331, 2015.&nbsp;<a href="#fnref:fn7" class="reversefootnote">&#8617;</a></p>
+      <p>W. Yih, M. Chang, X. He, and J. Gao. Semantic parsing via staged query graph generation: Question answering with knowledge base. In Proceedings of the 53rd Annual Meeting of the Association for Computational Linguistics and the 7th International Joint Conference on Natural Language Processing of the Asian Federation of Natural Language Processing, ACL 2015, July 26-31, 2015, Beijing, China, Volume 1: Long Papers, pages 1321–1331, 2015.&nbsp;<a href="#fnref:fn7" class="reversefootnote">&#8617;</a>&nbsp;<a href="#fnref:fn7:1" class="reversefootnote">&#8617;<sup>2</sup></a></p>
     </li>
   </ol>
 </div>

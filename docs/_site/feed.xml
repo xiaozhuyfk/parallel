@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-05-11T23:30:12-04:00</updated><id>http://localhost:4000/</id><title type="html">Ask Me Anything</title><subtitle>Distributed Question Answering System with Freebase</subtitle><entry><title type="html">Final Writeup</title><link href="http://localhost:4000/Final-Writeup/" rel="alternate" type="text/html" title="Final Writeup" /><published>2017-05-10T00:00:00-04:00</published><updated>2017-05-10T00:00:00-04:00</updated><id>http://localhost:4000/Final-Writeup</id><content type="html" xml:base="http://localhost:4000/Final-Writeup/">&lt;p&gt;This document is a final report of our &lt;strong&gt;Distributed Question Answering System&lt;/strong&gt; project for the course &lt;strong&gt;15-418 Parallel Computer Architecture and Programming&lt;/strong&gt;, 
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-05-12T00:18:25-04:00</updated><id>http://localhost:4000/</id><title type="html">Ask Me Anything</title><subtitle>Distributed Question Answering System with Freebase</subtitle><entry><title type="html">Final Writeup</title><link href="http://localhost:4000/Final-Writeup/" rel="alternate" type="text/html" title="Final Writeup" /><published>2017-05-10T00:00:00-04:00</published><updated>2017-05-10T00:00:00-04:00</updated><id>http://localhost:4000/Final-Writeup</id><content type="html" xml:base="http://localhost:4000/Final-Writeup/">&lt;p&gt;This document is a final report of our &lt;strong&gt;Distributed Question Answering System&lt;/strong&gt; project for the course &lt;strong&gt;15-418 Parallel Computer Architecture and Programming&lt;/strong&gt;, 
 and we will cover the following topics in this report:&lt;/p&gt;
 &lt;ul&gt;
   &lt;li&gt;Summary&lt;/li&gt;
@@ -16,11 +16,23 @@ and we will cover the following topics in this report:&lt;/p&gt;
 &lt;h2 id=&quot;background&quot;&gt;BACKGROUND&lt;/h2&gt;
 
 &lt;h4 id=&quot;what-is-freebase&quot;&gt;What is Freebase?&lt;/h4&gt;
-&lt;p&gt;Freebase is a large collaborative knowledge base currently maintained by Google. It is essentially a large list of 19 billion triples that describe the relationship among different entities.&lt;/p&gt;
+&lt;p&gt;Freebase [&lt;sup id=&quot;fnref:fn3&quot;&gt;&lt;a href=&quot;#fn:fn3&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;] is a large collaborative knowledge base currently maintained by Google. It is essentially a large list of 19 billion triples that describe the relationship among different entities.&lt;/p&gt;
 
 &lt;p&gt;The data is stored in structured databases where information can be retrieved using well-defined query languages such as SPARQL and MQL. In this project, the Freebase data is loaded into the Virtuoso database, and SPARQL queries were initiated during the process of generating fact candidates for each question in order to request for information about entities and relations.&lt;/p&gt;
 
 &lt;h4 id=&quot;system-architecture&quot;&gt;System Architecture&lt;/h4&gt;
+&lt;p&gt;If we were asked to find the answer for the question “Who inspired Obama?” in Freebase, we might want to take the following steps:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Identify the question is about the entity “Barack Obama”&lt;/li&gt;
+  &lt;li&gt;Scan through all possible relations connected to “Barack Obama”&lt;/li&gt;
+  &lt;li&gt;Find the best matched relation “influence.influence_node.influenced_by”&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The architecture of the Question Answering system is illustrated below.&lt;/p&gt;
+
+&lt;div style=&quot;text-align:center&quot;&gt;
+&lt;img src=&quot;https://xiaozhuyfk.github.io/parallel/images/system.png&quot; /&gt;
+&lt;/div&gt;
 
 &lt;h4 id=&quot;backend-design&quot;&gt;Backend Design&lt;/h4&gt;
 
@@ -32,7 +44,7 @@ and we will cover the following topics in this report:&lt;/p&gt;
 
 &lt;h2 id=&quot;approach&quot;&gt;APPROACH&lt;/h2&gt;
 &lt;h4 id=&quot;fact-candidate-generation&quot;&gt;Fact Candidate Generation&lt;/h4&gt;
-&lt;p&gt;We used the Entity Linker in the Aqqu system [&lt;sup id=&quot;fnref:fn1&quot;&gt;&lt;a href=&quot;#fn:fn1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;]. During the entity linking process, each subsequence &lt;script type=&quot;math/tex&quot;&gt;s&lt;/script&gt; of the query text is matched with all Freebase entities that have name or alias that equal to &lt;script type=&quot;math/tex&quot;&gt;s&lt;/script&gt;. These Freebase entities are the root entities recognized from the question, and the popolarity score computed with the CrossWikis dataset [&lt;sup id=&quot;fnref:fn8&quot;&gt;&lt;a href=&quot;#fn:fn8&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;] is added to the feature vector in the purpose of measuring entity linking accuracy. The CrossWikis dataset was created by web crawling hyperlinks of Wikipedia entities, and it could be used to measure the empirical distribution over Wikipedia entities. For entities that are not covered by CrossWikis, we only consider the exact name match.&lt;/p&gt;
+&lt;p&gt;We used the Entity Linker in the Aqqu system [&lt;sup id=&quot;fnref:fn1&quot;&gt;&lt;a href=&quot;#fn:fn1&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;]. During the entity linking process, each subsequence &lt;script type=&quot;math/tex&quot;&gt;s&lt;/script&gt; of the query text is matched with all Freebase entities that have name or alias that equal to &lt;script type=&quot;math/tex&quot;&gt;s&lt;/script&gt;. These Freebase entities are the root entities recognized from the question, and the popolarity score computed with the CrossWikis dataset [&lt;sup id=&quot;fnref:fn8&quot;&gt;&lt;a href=&quot;#fn:fn8&quot; class=&quot;footnote&quot;&gt;3&lt;/a&gt;&lt;/sup&gt;] is added to the feature vector in the purpose of measuring entity linking accuracy. The CrossWikis dataset was created by web crawling hyperlinks of Wikipedia entities, and it could be used to measure the empirical distribution over Wikipedia entities. For entities that are not covered by CrossWikis, we only consider the exact name match.&lt;/p&gt;
 
 &lt;p&gt;For example, the input question “who inspired obama?” will produce possible subsequences such as&lt;/p&gt;
 
@@ -53,9 +65,9 @@ and we will cover the following topics in this report:&lt;/p&gt;
 &lt;img src=&quot;https://xiaozhuyfk.github.io/parallel/images/LSTM3-chain.png&quot; /&gt;
 &lt;/div&gt;
 
-&lt;p&gt;Each Bi-directional LSTM model is trained pairwisely. Consider there are total of &lt;script type=&quot;math/tex&quot;&gt;n&lt;/script&gt; fact candidates for the query &lt;script type=&quot;math/tex&quot;&gt;q&lt;/script&gt;. We pair them up and get a total of &lt;script type=&quot;math/tex&quot;&gt;{n \choose 2} = \frac{n(n-1)}{2}&lt;/script&gt; training instances for query &lt;script type=&quot;math/tex&quot;&gt;q&lt;/script&gt;. For each training instance pair &lt;script type=&quot;math/tex&quot;&gt;(f_1, f_2)&lt;/script&gt;, the corresponding label will be either &lt;script type=&quot;math/tex&quot;&gt;1&lt;/script&gt; or &lt;script type=&quot;math/tex&quot;&gt;-1&lt;/script&gt; depending on which fact candidate has higher $F_1$ measure. The &lt;script type=&quot;math/tex&quot;&gt;F_1&lt;/script&gt; measure of a fact candidate is computed by the precision and recall of the answers compared with the gold answers provided by the dataset. The pair of fact candidates will then be fed into a pair of identical Bi-directional LSTM model ranking units, and the ranking score of each fact candidate $f$ can later be computed by the ranking unit after the training process.&lt;/p&gt;
+&lt;p&gt;Each Bi-directional LSTM model is trained pairwisely. Consider there are total of &lt;script type=&quot;math/tex&quot;&gt;n&lt;/script&gt; fact candidates for the query &lt;script type=&quot;math/tex&quot;&gt;q&lt;/script&gt;. We pair them up and get a total of &lt;script type=&quot;math/tex&quot;&gt;{n \choose 2} = \frac{n(n-1)}{2}&lt;/script&gt; training instances for query &lt;script type=&quot;math/tex&quot;&gt;q&lt;/script&gt;. For each training instance pair &lt;script type=&quot;math/tex&quot;&gt;(f_1, f_2)&lt;/script&gt;, the corresponding label will be either &lt;script type=&quot;math/tex&quot;&gt;1&lt;/script&gt; or &lt;script type=&quot;math/tex&quot;&gt;-1&lt;/script&gt; depending on which fact candidate has higher &lt;script type=&quot;math/tex&quot;&gt;F_1&lt;/script&gt; measure. The &lt;script type=&quot;math/tex&quot;&gt;F_1&lt;/script&gt; measure of a fact candidate is computed by the precision and recall of the answers compared with the gold answers provided by the dataset. The pair of fact candidates will then be fed into a pair of identical Bi-directional LSTM model ranking units, and the ranking score of each fact candidate &lt;script type=&quot;math/tex&quot;&gt;f&lt;/script&gt; can later be computed by the ranking unit after the training process.&lt;/p&gt;
 
-&lt;p&gt;The query text and the fact candidate components (subject, relation, object) are parsed into word tokens or tri-character-grams as described in [&lt;sup id=&quot;fnref:fn7&quot;&gt;&lt;a href=&quot;#fn:fn7&quot; class=&quot;footnote&quot;&gt;3&lt;/a&gt;&lt;/sup&gt;]. For example, the text “barack obama” will be translated into the following tokens,&lt;/p&gt;
+&lt;p&gt;The query text and the fact candidate components (subject, relation, object) are parsed into word tokens or tri-character-grams as described in [&lt;sup id=&quot;fnref:fn7&quot;&gt;&lt;a href=&quot;#fn:fn7&quot; class=&quot;footnote&quot;&gt;4&lt;/a&gt;&lt;/sup&gt;]. For example, the text “barack obama” will be translated into the following tokens,&lt;/p&gt;
 
 &lt;script type=&quot;math/tex; mode=display&quot;&gt;\Big[ \text{#ba, bar, ara, rac, ack, ck#, #ob, oba, bam, ama, ma#}\Big]&lt;/script&gt;
 
@@ -113,13 +125,13 @@ and we will cover the following topics in this report:&lt;/p&gt;
   &lt;/thead&gt;
   &lt;tbody&gt;
     &lt;tr&gt;
-      &lt;td&gt;AQQU&lt;/td&gt;
+      &lt;td&gt;AQQU [&lt;sup id=&quot;fnref:fn1:1&quot;&gt;&lt;a href=&quot;#fn:fn1&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;]&lt;/td&gt;
       &lt;td&gt;n/a&lt;/td&gt;
       &lt;td&gt;n/a&lt;/td&gt;
       &lt;td&gt;49.4%&lt;/td&gt;
     &lt;/tr&gt;
     &lt;tr&gt;
-      &lt;td&gt;STAGG&lt;/td&gt;
+      &lt;td&gt;STAGG [&lt;sup id=&quot;fnref:fn7:1&quot;&gt;&lt;a href=&quot;#fn:fn7&quot; class=&quot;footnote&quot;&gt;4&lt;/a&gt;&lt;/sup&gt;]&lt;/td&gt;
       &lt;td&gt;60.7%&lt;/td&gt;
       &lt;td&gt;52.8%&lt;/td&gt;
       &lt;td&gt;52.5%&lt;/td&gt;
@@ -145,14 +157,17 @@ and we will cover the following topics in this report:&lt;/p&gt;
 
 &lt;div class=&quot;footnotes&quot;&gt;
   &lt;ol&gt;
+    &lt;li id=&quot;fn:fn3&quot;&gt;
+      &lt;p&gt;K. Bollacker, C. Evans, P. Paritosh, T. Sturge, and J. Taylor. Freebase: A collaboratively created graph database for structuring human knowledge. In Proceedings of the 2008 ACM SIGMOD International Conference on Management of Data, SIGMOD ’08, pages 1247– 1250, New York, NY, USA, 2008. ACM.&amp;nbsp;&lt;a href=&quot;#fnref:fn3&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
     &lt;li id=&quot;fn:fn1&quot;&gt;
-      &lt;p&gt;H. Bast and E. Haussmann. More accurate question answering on freebase. In Proceedings of the 24th ACM International on Conference on Information and Knowledge Management, CIKM ’15, pages 1431–1440, New York, NY, USA, 2015. ACM.&amp;nbsp;&lt;a href=&quot;#fnref:fn1&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+      &lt;p&gt;H. Bast and E. Haussmann. More accurate question answering on freebase. In Proceedings of the 24th ACM International on Conference on Information and Knowledge Management, CIKM ’15, pages 1431–1440, New York, NY, USA, 2015. ACM.&amp;nbsp;&lt;a href=&quot;#fnref:fn1&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&amp;nbsp;&lt;a href=&quot;#fnref:fn1:1&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
     &lt;/li&gt;
     &lt;li id=&quot;fn:fn8&quot;&gt;
       &lt;p&gt;V. I. Spitkovsky and A. X. Chang. A cross-lingual dictionary for english wikipedia concepts. In N. C. C. Chair), K. Choukri, T. Declerck, M. U. Doan, B. Maegaard, J. Mariani, A. Moreno, J. Odijk, and S. Piperidis, editors, Proceedings of the Eight International Conference on Language Resources and Evaluation (LREC’12), Istanbul, Turkey, may 2012. European Language Resources Association (ELRA).&amp;nbsp;&lt;a href=&quot;#fnref:fn8&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
     &lt;/li&gt;
     &lt;li id=&quot;fn:fn7&quot;&gt;
-      &lt;p&gt;W. Yih, M. Chang, X. He, and J. Gao. Semantic parsing via staged query graph generation: Question answering with knowledge base. In Proceedings of the 53rd Annual Meeting of the Association for Computational Linguistics and the 7th International Joint Conference on Natural Language Processing of the Asian Federation of Natural Language Processing, ACL 2015, July 26-31, 2015, Beijing, China, Volume 1: Long Papers, pages 1321–1331, 2015.&amp;nbsp;&lt;a href=&quot;#fnref:fn7&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+      &lt;p&gt;W. Yih, M. Chang, X. He, and J. Gao. Semantic parsing via staged query graph generation: Question answering with knowledge base. In Proceedings of the 53rd Annual Meeting of the Association for Computational Linguistics and the 7th International Joint Conference on Natural Language Processing of the Asian Federation of Natural Language Processing, ACL 2015, July 26-31, 2015, Beijing, China, Volume 1: Long Papers, pages 1321–1331, 2015.&amp;nbsp;&lt;a href=&quot;#fnref:fn7&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&amp;nbsp;&lt;a href=&quot;#fnref:fn7:1&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
     &lt;/li&gt;
   &lt;/ol&gt;
 &lt;/div&gt;</content><author><name></name></author><summary type="html">This document is a final report of our Distributed Question Answering System project for the course 15-418 Parallel Computer Architecture and Programming, and we will cover the following topics in this report: Summary Background Approach Results</summary></entry><entry><title type="html">Project Checkpoint</title><link href="http://localhost:4000/Project-Checkpoint/" rel="alternate" type="text/html" title="Project Checkpoint" /><published>2017-04-23T00:00:00-04:00</published><updated>2017-04-23T00:00:00-04:00</updated><id>http://localhost:4000/Project-Checkpoint</id><content type="html" xml:base="http://localhost:4000/Project-Checkpoint/">&lt;p&gt;This document is a checkpoint review of our &lt;strong&gt;Distributed Question Answering System&lt;/strong&gt; project for the course &lt;strong&gt;15-418 Parallel Computer Architecture and Programming&lt;/strong&gt;, and we will cover the following topics in this report:&lt;/p&gt;

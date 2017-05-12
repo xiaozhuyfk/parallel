@@ -21,14 +21,22 @@ In this project, we built an end-to-end Question Answering system based on Knowl
 ## BACKGROUND
 
 #### What is Freebase?
-Freebase is a large collaborative knowledge base currently maintained by Google. It is essentially a large list of 19 billion triples that describe the relationship among different entities.
+Freebase [[^fn3]] is a large collaborative knowledge base currently maintained by Google. It is essentially a large list of 19 billion triples that describe the relationship among different entities.
 
 The data is stored in structured databases where information can be retrieved using well-defined query languages such as SPARQL and MQL. In this project, the Freebase data is loaded into the Virtuoso database, and SPARQL queries were initiated during the process of generating fact candidates for each question in order to request for information about entities and relations.
 
 
 #### System Architecture
+If we were asked to find the answer for the question "Who inspired Obama?" in Freebase, we might want to take the following steps:
+* Identify the question is about the entity "Barack Obama"
+* Scan through all possible relations connected to "Barack Obama"
+* Find the best matched relation "influence.influence_node.influenced_by"
 
+The architecture of the Question Answering system is illustrated below.
 
+<div style="text-align:center">
+<img src="https://xiaozhuyfk.github.io/parallel/images/system.png" />
+</div>
 
 
 
@@ -71,7 +79,7 @@ Long Short Term Memory networks – usually just called “LSTMs” – are a sp
 <img src="https://xiaozhuyfk.github.io/parallel/images/LSTM3-chain.png" />
 </div>
 
-Each Bi-directional LSTM model is trained pairwisely. Consider there are total of $$n$$ fact candidates for the query $$q$$. We pair them up and get a total of $${n \choose 2} = \frac{n(n-1)}{2}$$ training instances for query $$q$$. For each training instance pair $$(f_1, f_2)$$, the corresponding label will be either $$1$$ or $$-1$$ depending on which fact candidate has higher $F_1$ measure. The $$F_1$$ measure of a fact candidate is computed by the precision and recall of the answers compared with the gold answers provided by the dataset. The pair of fact candidates will then be fed into a pair of identical Bi-directional LSTM model ranking units, and the ranking score of each fact candidate $f$ can later be computed by the ranking unit after the training process.
+Each Bi-directional LSTM model is trained pairwisely. Consider there are total of $$n$$ fact candidates for the query $$q$$. We pair them up and get a total of $${n \choose 2} = \frac{n(n-1)}{2}$$ training instances for query $$q$$. For each training instance pair $$(f_1, f_2)$$, the corresponding label will be either $$1$$ or $$-1$$ depending on which fact candidate has higher $$F_1$$ measure. The $$F_1$$ measure of a fact candidate is computed by the precision and recall of the answers compared with the gold answers provided by the dataset. The pair of fact candidates will then be fed into a pair of identical Bi-directional LSTM model ranking units, and the ranking score of each fact candidate $$f$$ can later be computed by the ranking unit after the training process.
 
 The query text and the fact candidate components (subject, relation, object) are parsed into word tokens or tri-character-grams as described in [[^fn7]]. For example, the text "barack obama" will be translated into the following tokens,
 
@@ -125,8 +133,8 @@ $$\bar{F_1} = \frac{1}{n} \sum_{i=1}^{n} F_1(\text{reference}, \text{answer})$$
 
 | System | Average Recall | Average Precision | Average F1 |
 |--------|----------------|-------------------|------------|
-| AQQU   | n/a | n/a | 49.4% |
-| STAGG  | 60.7% | 52.8% | 52.5% |
+| AQQU [[^fn1]]   | n/a | n/a | 49.4% |
+| STAGG [[^fn7]] | 60.7% | 52.8% | 52.5% |
 | AMA    | 57.2% | 39.6% | 38.2% |
 
 #### Speedup
