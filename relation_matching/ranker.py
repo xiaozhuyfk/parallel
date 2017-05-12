@@ -290,6 +290,7 @@ class Ranker(object):
         json = modules.facts_extractor.extract_fact_list_with_entity_linker(question)
         if json == []:
             return []
+        print json
 
         start_time = time.time()
         candidates = []
@@ -469,6 +470,8 @@ class Ranker(object):
                 candidates.append(fact_candidate)
         duration = (time.time() - start_time) * 1000
         logger.info("Feature Extraction time: %.2f ms." % duration)
+
+        if (len(candidates) == 0): return []
 
         start_time = time.time()
         pairwise_predictions = self.pairwise_model.predict(candidates, 28).flatten()

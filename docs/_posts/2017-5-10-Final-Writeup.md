@@ -13,7 +13,7 @@ and we will cover the following topics in this report:
 <br><br>
 
 ## SUMMARY
-In this project, we built an end-to-end Question Answering system based on Knoledge base (Freebase). 
+In this project, we built an end-to-end Question Answering system based on Knowledge base (Freebase). 
 <br><br>
 
 
@@ -21,6 +21,20 @@ In this project, we built an end-to-end Question Answering system based on Knole
 ## BACKGROUND
 
 #### What is Freebase?
+Freebase is a large collaborative knowledge base currently maintained by Google. It is essentially a large list of 19 billion triples that describe the relationship among different entities.
+
+The data is stored in structured databases where information can be retrieved using well-defined query languages such as SPARQL and MQL. In this project, the Freebase data is loaded into the Virtuoso database, and SPARQL queries were initiated during the process of generating fact candidates for each question in order to request for information about entities and relations.
+
+
+#### System Architecture
+
+
+
+
+
+#### Elastic Server
+
+
 <br><br>
 
 
@@ -92,6 +106,22 @@ Given the large amount of triplets to be searched, it provided our group suffici
 
 
 ## RESULTS
+
+#### Evaluation Data: WebQuestions
+WebQuestions is the question set used for evaluation. This benchmark contains a set of questions that cover a wide range of topics. In this section, we will introduce the characteristics of each benchmark, and how they differ with each other in terms of question types and question complexity.
+
+**WebQuestions** benchmark contains 5810 questions in total, and all questions were created by the Google suggest API. For training and testing purposes, the dataset has been partitioned into two segments where 3778 (70%) of the questions will be used for training and 2032 (30%) of the questions will be used for testing. The queries in WebQuestions are less grammatical and are not specifically tailored to Freebase, which make the questions more complex and more difficult to answer for Question Answering systems. The reference answers for the questions were obtained by crowd-sourcing, which might introduce additional noises during system evaluation. Some example questions in the WebQuestions benchmark are listed below,
+
+$$
+\text{what is ryan seacrest radio show?} \\
+\text{what is my timezone in louisiana?} \\
+...
+$$
+
+The performance is evaluated by the average precision, average recall and average $$F_1$$ measure of the retrieval answers across all questions in the test set. The average $$F_1$$ measure of the dataset is computed as following,
+
+$$\bar{F_1} = \frac{1}{n} \sum_{i=1}^{n} F_1(\text{reference}, \text{answer})$$
+
 <br><br>
 
 
