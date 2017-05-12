@@ -18,6 +18,10 @@ from model import (
     EmbeddingJointPairwise,
 )
 
+from joblib import Parallel, delayed
+import multiprocessing
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -163,6 +167,9 @@ class sim_thread (threading.Thread):
         pass
 
 
+def compute_similarity(candidates, model, sentence_size):
+    return model.predict(candidates, sentence_size).flatten()
+
 
 class Ranker(object):
 
@@ -190,6 +197,18 @@ class Ranker(object):
         self.jointpairwise_trigram = self.get_model('LSTMJointPairwiseTrigram')
         self.embedding = self.get_model('EmbeddingJointPairwise')
         self.embedding_trigram = self.get_model('EmbeddingJointPairwiseTrigram')
+        self.models = [
+            (self.pairwise_model, 28),
+            (self.pairwise_trigram, 203),
+            (self.jointpairwise, 28),
+            (self.jointpairwise_trigram, 203),
+            (self.embedding, 28),
+            (self.embedding_trigram, 203)
+        ]
+
+        num_cores = multiprocessing.cpu_count()
+        self.parallel = Parallel(n_jobs=num_cores)
+
         logger.info("Done loading models.")
 
     @staticmethod
@@ -279,6 +298,112 @@ class Ranker(object):
             model = None
         return model
 
+    def parallel_rank(self, question):
+        question = question.lower()
+        timestamp = '{:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now())
+        filename = question.encode('utf-8')[:10] + ' ' + timestamp
+        testing_path = '/home/ubuntu/parallel/svm_result/' + filename + '.LeToRTest'
+        scores_path = '/home/ubuntu/parallel/svm_result/' + filename + '.RankScore'
+        codecsWriteFile(testing_path, "")
+
+        json = modules.facts_extractor.extract_fact_list_with_entity_linker(question)
+        if json == []:
+            return []
+
+        start_time = time.time()
+        candidates = []
+        for ie in json:
+            subject = ie["subject"]
+            sid = ie["sid"]
+            score = ie["score"]
+            relations = ie["relations"]
+            for rel in relations:
+                fact_candidate = FactCandidate(self.config_options,
+                                              question,
+                                              subject,
+                                              sid,
+                                              score,
+                                              rel,
+                                              relations[rel])
+                fact_candidate.extract_features()
+                candidates.append(fact_candidate)
+        duration = (time.time() - start_time) * 1000
+        logger.info("Feature Extraction time: %.2f ms." % duration)
+
+        if len(candidates) == 0: return []
+
+
+        start_time = time.time()
+        try:
+            computation = self.parallel(
+                delayed(compute_similarity(candidates, model, sentence_size)) for model, sentence_size in self.models
+            )
+            """
+            pairwise_predictions = self.pairwise_model.predict(candidates, 28).flatten()
+            pairwise_trigram_predictions = self.pairwise_trigram.predict(candidates, 203).flatten()
+            jointpairwise_predictions = self.jointpairwise.predict(
+                candidates,
+                28,
+                'query_tokens',
+                'relation_tokens'
+            ).flatten()
+            jointpairwise_trigram_predictions = self.jointpairwise_trigram.predict(
+                candidates,
+                203,
+                'query_trigram',
+                'relation_trigram'
+            ).flatten()
+            embedding_predictions = self.embedding.predict(
+                candidates,
+                28,
+                'query_tokens',
+                'relation_tokens'
+            ).flatten()
+            embedding_trigram_predictions = self.embedding_trigram.predict(
+                candidates,
+                203,
+                'query_trigram',
+                'relation_trigram'
+            ).flatten()
+            """
+        except:
+            return []
+
+        pairwise_predictions = computation[0]
+        pairwise_trigram_predictions = computation[1]
+        jointpairwise_predictions = computation[2]
+        jointpairwise_trigram_predictions = computation[3]
+        embedding_predictions = computation[4]
+        embedding_trigram_predictions = computation[5]
+
+        duration = (time.time() - start_time) * 1000
+        logger.info("Relation Score Computation time: %.2f ms." % duration)
+
+
+        start_time = time.time()
+        for idx in xrange(len(candidates)):
+            candidate = candidates[idx]
+            candidate.add_feature(jointpairwise_predictions[idx])
+            candidate.add_feature(jointpairwise_trigram_predictions[idx])
+            candidate.add_feature(embedding_predictions[idx])
+            candidate.add_feature(embedding_trigram_predictions[idx])
+            candidate.add_feature(pairwise_predictions[idx])
+            candidate.add_feature(pairwise_trigram_predictions[idx])
+
+        self.nomalize_features(candidates)
+        for candidate in candidates:
+            codecsWriteFile(testing_path,
+                            str(candidate.feature_vector),
+                            "a")
+        self.svm_rank(testing_path, scores_path)
+        duration = (time.time() - start_time) * 1000
+        logger.info("SVM Ranking time: %.2f ms." % duration)
+
+        # Choose answers from candidates
+        scores = [float(n) for n in codecsReadFile(scores_path).strip().split("\n")]
+        top5 = np.argsort(scores)[::-1][:5]
+        return [candidates[idx] for idx in top5]
+
     def rank(self, question):
         question = question.lower()
         timestamp = '{:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now())
@@ -312,6 +437,7 @@ class Ranker(object):
         logger.info("Feature Extraction time: %.2f ms." % duration)
 
         if len(candidates) == 0: return []
+
 
         start_time = time.time()
         try:

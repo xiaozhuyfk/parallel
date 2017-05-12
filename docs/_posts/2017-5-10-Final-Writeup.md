@@ -13,7 +13,11 @@ and we will cover the following topics in this report:
 <br><br>
 
 ## SUMMARY
-In this project, we built an end-to-end Question Answering system based on Knowledge base (Freebase). 
+In this project, we built an end-to-end Question Answering system with the following features:
+* **Distributed backend server with multiple QA instance**
+* **Distributed computation of Question-Relation similarity with Master-Worker design**
+* **Measure word sequence similarity with Bi-directional LSTM models**
+* **Freebase knoledge graph visualization with Javascript**
 <br><br>
 
 
@@ -104,7 +108,7 @@ Different from the LSTM Ranking model, the LSTM Joint model will separate the qu
 
 
 #### Distributed Question-Relation Similarity Computation
-Given the large amount of triplets to be searched, it provided our group sufficient motivation to distribute the computation to multiple nodes across the network. Each query request can be packaged and sent to a pool of workers, such that data-parallelism can be leveraged upon. In order to achieve this goal, we eventually decided the following structure:
+Given the large amount of Freebase triples to be searched, it provided our group sufficient motivation to distribute the computation to multiple nodes across the network. Each query request can be packaged and sent to a pool of workers, such that data-parallelism can be leveraged upon. In order to achieve this goal, we eventually decided the following structure:
 
 <div style="text-align:center">
 <img src="https://xiaozhuyfk.github.io/parallel/images/model.png" />
