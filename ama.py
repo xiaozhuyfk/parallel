@@ -28,7 +28,7 @@ def play():
         question = sys.stdin.readline().strip()
         if not question: continue
 
-        top5 = modules.facts_ranker.rank(question)
+        top5 = modules.facts_ranker.parallel_rank(question)
 
         if not top5:
             print("Sorry, I don't know the answer.")
@@ -38,9 +38,9 @@ def play():
 
 def test(dataset):
     queries = load_eval_queries(dataset)
-    file_path = "/home/ubuntu/parallel/duration.txt"
-    #writeFile(file_path, "")
-    for query in queries[-4:]:
+    file_path = "/home/ubuntu/parallel/duration_parallel.txt"
+    writeFile(file_path, "")
+    for query in queries:
         question = query.utterance
         start_time = time.time()
         modules.facts_ranker.rank(question)
