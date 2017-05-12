@@ -167,7 +167,7 @@ top5 = null
 
 Network = () ->
     width = 800
-    height = 800
+    height = 600
 
     # allData will store the unfiltered data
     allData = []
