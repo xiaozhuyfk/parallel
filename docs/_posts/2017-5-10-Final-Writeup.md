@@ -168,8 +168,7 @@ For the distributed computation on 8 machines by fact candidate chunk size of 40
 <br><br>
 
 
-## Future study/Leftover:
-
+## FURTHER IMPROVEMENT
 Previously we aimed to parallelize SVM as one of our goals of the project. However given the limited time and the fact that we have derived our knowledge base from training algorithm, we did not manage to provide a paralleled solution to SVM learning at this point in time. The classification process of SVM is derived from a simple dot product calculation and is trivially parallelizable given the vectors. Therefore we omit the part of accelerating SVM through techniques learnt from the class in our final support. In one of the paper of Joachims, the author described an algorithm that accumulates the number of positive and negative occurrences, which will result in $$O(n)$$ computations per constraint in the SVM problem instead of $$O(n^2)$$. While the algorithm poses more dependencies between iterations within a loop, it would be an interesting idea to attempt parallel techniques on this faster algorithm.
 
 <br><br>
