@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-05-12T05:23:57-04:00</updated><id>http://localhost:4000/</id><title type="html">Ask Me Anything</title><subtitle>Distributed Question Answering System with Freebase</subtitle><entry><title type="html">Final Writeup</title><link href="http://localhost:4000/Final-Writeup/" rel="alternate" type="text/html" title="Final Writeup" /><published>2017-05-10T00:00:00-04:00</published><updated>2017-05-10T00:00:00-04:00</updated><id>http://localhost:4000/Final-Writeup</id><content type="html" xml:base="http://localhost:4000/Final-Writeup/">&lt;p&gt;This document is a final report of our &lt;strong&gt;Distributed Question Answering System&lt;/strong&gt; project for the course &lt;strong&gt;15-418 Parallel Computer Architecture and Programming&lt;/strong&gt;, 
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-05-12T21:38:48-04:00</updated><id>http://localhost:4000/</id><title type="html">Ask Me Anything</title><subtitle>Distributed Question Answering System with Freebase</subtitle><entry><title type="html">Final Writeup</title><link href="http://localhost:4000/Final-Writeup/" rel="alternate" type="text/html" title="Final Writeup" /><published>2017-05-10T00:00:00-04:00</published><updated>2017-05-10T00:00:00-04:00</updated><id>http://localhost:4000/Final-Writeup</id><content type="html" xml:base="http://localhost:4000/Final-Writeup/">&lt;p&gt;This document is a final report of our &lt;strong&gt;Distributed Question Answering System&lt;/strong&gt; project for the course &lt;strong&gt;15-418 Parallel Computer Architecture and Programming&lt;/strong&gt;, 
 and we will cover the following topics in this report:&lt;/p&gt;
 &lt;ul&gt;
   &lt;li&gt;Summary&lt;/li&gt;
@@ -41,6 +41,8 @@ and we will cover the following topics in this report:&lt;/p&gt;
 &lt;/div&gt;
 
 &lt;h4 id=&quot;backend-design&quot;&gt;Backend Design&lt;/h4&gt;
+
+&lt;p&gt;Upon receiving a request from client, the load balancer will assign the query question into one of the QA instances for analysis. Each QA instance has a complete copy of the Freebase system, as well as a cache for storing past fact candidates. The derived fact candidates from QA system are in the form of triple and turned over to the ventilator, the primary task scheduler, to be further assigned in a distributed network.&lt;/p&gt;
 
 &lt;div style=&quot;text-align:center&quot;&gt;
 &lt;img src=&quot;https://xiaozhuyfk.github.io/parallel/images/server.png&quot; /&gt;
@@ -155,45 +157,31 @@ and we will cover the following topics in this report:&lt;/p&gt;
 
 &lt;h4 id=&quot;speedup&quot;&gt;Speedup&lt;/h4&gt;
 
-&lt;script type=&quot;text/javascript&quot; src=&quot;https://xiaozhuyfk.github.io/parallel/js/plotlyjs-bundle.js&quot;&gt;&lt;/script&gt;
+&lt;p&gt;The following plot is the response time of processing each question in the WebQuestions test data set. Please zoom in to examine the data.&lt;/p&gt;
 
-&lt;script type=&quot;text/javascript&quot; src=&quot;https://xiaozhuyfk.github.io/parallel/js/figure.js&quot;&gt;&lt;/script&gt;
+&lt;p&gt;We compare the response time across 4 experiment setups:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Sequential&lt;/li&gt;
+  &lt;li&gt;Multi-threading on single machine&lt;/li&gt;
+  &lt;li&gt;Distributed computation on 8 machines (distribute by model computation)&lt;/li&gt;
+  &lt;li&gt;Distributed computation on 8 machines (distribute by fact candidate chunk size of 40)&lt;/li&gt;
+&lt;/ul&gt;
 
-&lt;div id=&quot;eb3b94c4-64bf-4ea3-ac97-e5e466d298f5&quot; style=&quot;width: 100%; height: 100%;&quot; class=&quot;plotly-graph-div&quot;&gt;&lt;/div&gt;
-&lt;script type=&quot;text/javascript&quot;&gt;
-    (function(){
-        window.PLOTLYENV={'BASE_URL': 'https://plot.ly'};
+&lt;iframe width=&quot;800&quot; height=&quot;500&quot; frameborder=&quot;0&quot; scrolling=&quot;no&quot; src=&quot;https://plot.ly/~xiaozhuyfk/145.embed&quot;&gt;&lt;/iframe&gt;
 
-        var gd = document.getElementById('eb3b94c4-64bf-4ea3-ac97-e5e466d298f5')
-        var resizeDebounce = null;
+&lt;p&gt;The following plot shows the average response time for each experiment setup.&lt;/p&gt;
 
-        function resizePlot() {
-            var bb = gd.getBoundingClientRect();
-            Plotly.relayout(gd, {
-                width: bb.width,
-                height: bb.height
-            });
-        }
+&lt;iframe width=&quot;800&quot; height=&quot;500&quot; frameborder=&quot;0&quot; scrolling=&quot;no&quot; src=&quot;https://plot.ly/~xiaozhuyfk/147.embed&quot;&gt;&lt;/iframe&gt;
 
-        
-        window.addEventListener('resize', function() {
-            if (resizeDebounce) {
-                window.clearTimeout(resizeDebounce);
-            }
-            resizeDebounce = window.setTimeout(resizePlot, 100);
-        });
-        
+&lt;p&gt;We find that the average response time for the multi-threading setup is even worse than the sequential version. This is due to the fact that the computation of the similarity scores with the LSTM models is highly CPU-intensive, and distribute the computation to multiple threads only increases the overhead of the program for questions with small amount of fact candidates. However, when we examine the data closely, we can see that the multi-threading version has reasonable speed-up for questions with large number of fact candidates.&lt;/p&gt;
 
-        
-        Plotly.plot(gd,  {
-            data: figure.data,
-            layout: figure.layout,
-            frames: figure.frames,
-            config: {&quot;mapboxAccessToken&quot;: &quot;pk.eyJ1IjoiY2hyaWRkeXAiLCJhIjoiY2lxMnVvdm5iMDA4dnhsbTQ5aHJzcGs0MyJ9.X9o_rzNLNesDxdra4neC_A&quot;, &quot;linkText&quot;: &quot;Export to plot.ly&quot;, &quot;showLink&quot;: true}
-        });
-        
-   }());
-&lt;/script&gt;
+&lt;p&gt;For the distributed computation on 8 machines by fact candidate chunk size of 40, we reached an average speed up of &lt;script type=&quot;math/tex&quot;&gt;20.97&lt;/script&gt;x compared with the sequential version.&lt;/p&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;future-studyleftover&quot;&gt;Future study/Leftover:&lt;/h2&gt;
+
+&lt;p&gt;Previously we aimed to parallelize SVM as one of our goals of the project. However given the limited time and the fact that we have derived our knowledge base from training algorithm, we did not manage to provide a paralleled solution to SVM learning at this point in time. The classification process of SVM is derived from a simple dot product calculation and is trivially parallelizable given the vectors. Therefore we omit the part of accelerating SVM through techniques learnt from the class in our final support. In one of the paper of Joachims, the author described an algorithm that accumulates the number of positive and negative occurrences, which will result in &lt;script type=&quot;math/tex&quot;&gt;O(n)&lt;/script&gt; computations per constraint in the SVM problem instead of &lt;script type=&quot;math/tex&quot;&gt;O(n^2)&lt;/script&gt;. While the algorithm poses more dependencies between iterations within a loop, it would be an interesting idea to attempt parallel techniques on this faster algorithm.&lt;/p&gt;
 
 &lt;p&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
 

@@ -46,6 +46,8 @@ The architecture of the Question Answering system is illustrated below.
 
 #### Backend Design
 
+Upon receiving a request from client, the load balancer will assign the query question into one of the QA instances for analysis. Each QA instance has a complete copy of the Freebase system, as well as a cache for storing past fact candidates. The derived fact candidates from QA system are in the form of triple and turned over to the ventilator, the primary task scheduler, to be further assigned in a distributed network.
+
 <div style="text-align:center">
 <img src="https://xiaozhuyfk.github.io/parallel/images/server.png" />
 </div>
@@ -145,44 +147,30 @@ $$\bar{F_1} = \frac{1}{n} \sum_{i=1}^{n} F_1(\text{reference}, \text{answer})$$
 
 #### Speedup
 
-<script type="text/javascript" src="https://xiaozhuyfk.github.io/parallel/js/plotlyjs-bundle.js"></script>
-<script type="text/javascript" src="https://xiaozhuyfk.github.io/parallel/js/figure.js"></script>
+The following plot is the response time of processing each question in the WebQuestions test data set. Please zoom in to examine the data. 
 
-<div id="eb3b94c4-64bf-4ea3-ac97-e5e466d298f5" style="width: 100%; height: 100%;" class="plotly-graph-div"></div>
-<script type="text/javascript">
-    (function(){
-        window.PLOTLYENV={'BASE_URL': 'https://plot.ly'};
+We compare the response time across 4 experiment setups:
+* Sequential
+* Multi-threading on single machine
+* Distributed computation on 8 machines (distribute by model computation)
+* Distributed computation on 8 machines (distribute by fact candidate chunk size of 40)
 
-        var gd = document.getElementById('eb3b94c4-64bf-4ea3-ac97-e5e466d298f5')
-        var resizeDebounce = null;
+<iframe width="800" height="500" frameborder="0" scrolling="no" src="https://plot.ly/~xiaozhuyfk/145.embed"></iframe>
 
-        function resizePlot() {
-            var bb = gd.getBoundingClientRect();
-            Plotly.relayout(gd, {
-                width: bb.width,
-                height: bb.height
-            });
-        }
+The following plot shows the average response time for each experiment setup.
 
-        
-        window.addEventListener('resize', function() {
-            if (resizeDebounce) {
-                window.clearTimeout(resizeDebounce);
-            }
-            resizeDebounce = window.setTimeout(resizePlot, 100);
-        });
-        
+<iframe width="800" height="500" frameborder="0" scrolling="no" src="https://plot.ly/~xiaozhuyfk/147.embed"></iframe>
 
-        
-        Plotly.plot(gd,  {
-            data: figure.data,
-            layout: figure.layout,
-            frames: figure.frames,
-            config: {"mapboxAccessToken": "pk.eyJ1IjoiY2hyaWRkeXAiLCJhIjoiY2lxMnVvdm5iMDA4dnhsbTQ5aHJzcGs0MyJ9.X9o_rzNLNesDxdra4neC_A", "linkText": "Export to plot.ly", "showLink": true}
-        });
-        
-   }());
-</script>
+We find that the average response time for the multi-threading setup is even worse than the sequential version. This is due to the fact that the computation of the similarity scores with the LSTM models is highly CPU-intensive, and distribute the computation to multiple threads only increases the overhead of the program for questions with small amount of fact candidates. However, when we examine the data closely, we can see that the multi-threading version has reasonable speed-up for questions with large number of fact candidates.
+
+For the distributed computation on 8 machines by fact candidate chunk size of 40, we reached an average speed up of $$20.97$$x compared with the sequential version.
+
+<br><br>
+
+
+## Future study/Leftover:
+
+Previously we aimed to parallelize SVM as one of our goals of the project. However given the limited time and the fact that we have derived our knowledge base from training algorithm, we did not manage to provide a paralleled solution to SVM learning at this point in time. The classification process of SVM is derived from a simple dot product calculation and is trivially parallelizable given the vectors. Therefore we omit the part of accelerating SVM through techniques learnt from the class in our final support. In one of the paper of Joachims, the author described an algorithm that accumulates the number of positive and negative occurrences, which will result in $$O(n)$$ computations per constraint in the SVM problem instead of $$O(n^2)$$. While the algorithm poses more dependencies between iterations within a loop, it would be an interesting idea to attempt parallel techniques on this faster algorithm.
 
 <br><br>
 
